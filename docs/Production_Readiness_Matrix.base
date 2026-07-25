@@ -1,0 +1,16 @@
+name: Principal Production Readiness 10-Domain Matrix
+filters:
+  and:
+    - field: audit_status
+      operator: equals
+      value: verified
+views:
+  - name: All Production Domains
+    type: table
+    fields:
+      - domain_id
+      - domain_name
+      - evaluated_component
+      - empirical_result
+      - score
+      - audit_status

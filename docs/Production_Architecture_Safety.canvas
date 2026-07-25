@@ -1,0 +1,79 @@
+{
+  "nodes": [
+    {
+      "id": "node_user",
+      "x": 0,
+      "y": 0,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 1. User Input\nDashboard UI / MediBot Assistant\nRoles: Patient, Staff, Doctor, Admin"
+    },
+    {
+      "id": "node_crisis",
+      "x": 380,
+      "y": 0,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 2. Crisis & Emergency Interceptor\n`CrisisDetector.php` (Trilingual EN/TL/CEB)\nIntercepts suicidal ideation -> NCMH Hotline 1553."
+    },
+    {
+      "id": "node_sec",
+      "x": 760,
+      "y": 0,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 3. SecurityGuard & RBAC\n`SecurityGuard.php` (User validation, rate limiting, role allowlist, PHI output sanitization)."
+    },
+    {
+      "id": "node_tools",
+      "x": 380,
+      "y": 240,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 4. Deterministic Tool Execution\n`ToolRegistry.php` + `StaffTools.php`\nAnti-enumeration search & duplicate check-in protection."
+    },
+    {
+      "id": "node_audit",
+      "x": 760,
+      "y": 240,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 5. Audit Logging & DB Integrity\n`log_audit_action()` writes success, failure, and denied actions to `audit_logs`."
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "fromNode": "node_user",
+      "fromSide": "right",
+      "toNode": "node_crisis",
+      "toSide": "left"
+    },
+    {
+      "id": "e2",
+      "fromNode": "node_crisis",
+      "fromSide": "right",
+      "toNode": "node_sec",
+      "toSide": "left"
+    },
+    {
+      "id": "e3",
+      "fromNode": "node_sec",
+      "fromSide": "bottom",
+      "toNode": "node_tools",
+      "toSide": "top"
+    },
+    {
+      "id": "e4",
+      "fromNode": "node_tools",
+      "fromSide": "right",
+      "toNode": "node_audit",
+      "toSide": "left"
+    }
+  ]
+}

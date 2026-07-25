@@ -243,8 +243,8 @@ class StaffTools
             return ['error' => 'Appointment ID #' . $appId . ' not found.'];
         }
 
-        if ($resCheck['status'] === 'Completed' || $resCheck['status'] === 'Cancelled') {
-            return ['error' => 'Appointment #' . $appId . ' is already ' . $resCheck['status'] . '. Cannot check in.'];
+        if ($resCheck['status'] === 'Completed' || $resCheck['status'] === 'Cancelled' || $resCheck['status'] === 'In Progress') {
+            return ['error' => 'Appointment #' . $appId . ' is already ' . $resCheck['status'] . '. Cannot check in again.'];
         }
 
         $stmtUp = $this->db->prepare("UPDATE appointments SET status = 'In Progress' WHERE id = :id");
