@@ -291,10 +291,10 @@ class AssistantFactory
                          "1. 📋 **Live Queue Overview**: Check live patient counts across all doctors (currently **{$totalQueue}** patient(s) in queue).\n" .
                          "2. 🚶 **Walk-in Registration Guide**: Guide you through registering walk-in/phone appointments (**{$availCount} doctor(s) available today**).\n" .
                          "3. ✅ **Patient Check-in Support**: Step-by-step guidance on checking in scheduled patients.\n" .
-                         "4. 🔍 **Patient Demographics Lookup**: Search patient records by name or email.\n" .
+                         "4. 🔍 **Patient Demographics Lookup**: Search patient records by name or email (e.g. *'is there someone named Rivera'*).\n" .
                          "5. 🩺 **Doctor Availability**: Check on-duty schedules and consultation slots.\n\n" .
                          "How can I assist you with frontdesk operations right now?";
-            } elseif (str_contains($lower, 'queue')) {
+            } elseif (str_contains($lower, 'queue') || str_contains($lower, 'line') || str_contains($lower, 'waiting')) {
                 $q = $this->tools->executeToolCall('getClinicQueueOverview', [], $userId, $role, $convId);
                 $executedTools = ['getClinicQueueOverview'];
                 $total = $q['total_in_queue'] ?? 0;
@@ -310,10 +310,36 @@ class AssistantFactory
                 $executedTools = ['getClinicQueueOverview'];
                 $total = $q['total_in_queue'] ?? 0;
                 $reply = "✅ **Patient Check-in Guide**\n\nTo check in a scheduled patient:\n\n1. Search for the patient's name in the **Live Schedule List** table.\n2. Verify their appointment time and details.\n3. Click the **'Check-In'** action button.\n\nCurrently **{$total}** patient(s) are in the active queue.";
-            } elseif (str_contains($lower, 'search')) {
-                $reply = "🔍 **Patient Lookup Guide**\n\nTo look up patient details, type **'Search [patient name]'** or use the search bar above. I will pull up patient demographics, email contact info, and registration dates!";
+            } elseif (str_contains($lower, 'doctor') || str_contains($lower, 'dr') || str_contains($lower, 'schedule') || str_contains($lower, 'available')) {
+                $docs = $this->tools->executeToolCall('getAvailableDoctors', [], $userId, $role, $convId);
+                $executedTools = ['getAvailableDoctors'];
+                $listStr = [];
+                foreach ($docs['doctors'] ?? [] as $d) {
+                    $listStr[] = "• **" . $d['doctor_name'] . "** (" . $d['specialization'] . ") - Status: " . $d['status'];
+                }
+                $docList = !empty($listStr) ? implode("\n", $listStr) : "• No doctors currently listed as available today.";
+                $reply = "🩺 **Live On-Duty Doctors**\n\nHere are the doctors on-duty for today:\n\n{$docList}\n\nWould you like me to check a specific doctor's consultation slots?";
             } else {
-                $reply = "Hello! I am your Frontdesk Assistant. How can I assist you with patient check-in, queue lookup, or walk-in registration today?";
+                // Smart Name/Demographic Search Extractor for queries like "is there someone named rivera", "find patient john", "lookup smith"
+                $cleanSearch = trim(preg_replace('/^(is there|someone|named|find|search|lookup|who is|patient|for|a|the)+/i', '', $message));
+                if (empty($cleanSearch)) {
+                    $cleanSearch = $message;
+                }
+
+                $res = $this->tools->executeToolCall('searchPatientByName', ['query' => $cleanSearch], $userId, $role, $convId);
+                $executedTools = ['searchPatientByName'];
+                $matchCount = $res['match_count'] ?? 0;
+
+                if ($matchCount > 0) {
+                    $patientLines = [];
+                    foreach ($res['patients'] ?? [] as $p) {
+                        $patientLines[] = "• **{$p['name']}** (ID #{$p['id']}) | Email: {$p['email']} | Reg Date: " . substr($p['created_at'], 0, 10);
+                    }
+                    $pList = implode("\n", $patientLines);
+                    $reply = "🔍 **Patient Search Results for '{$cleanSearch}'**\n\nFound **{$matchCount}** matching patient record(s):\n\n{$pList}\n\nHow else can I assist with this patient's frontdesk records?";
+                } else {
+                    $reply = "🔍 **Patient Search Results for '{$cleanSearch}'**\n\nNo matching patient records found in the clinic database for **'{$cleanSearch}'**.\n\nWould you like to register a new walk-in patient using the **'Book Walk-in/Phone'** button?";
+                }
             }
         } else {
             $assistantName = 'Personal Clinic Assistant';
