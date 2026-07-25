@@ -1,0 +1,16 @@
+name: Frontdesk Assistant Capability Matrix
+filters:
+  and:
+    - field: status
+      operator: equals
+      value: production_ready
+views:
+  - name: All Capabilities
+    type: table
+    fields:
+      - capability_name
+      - advertised_feature
+      - php_tool_name
+      - rbac_allowed
+      - db_table_source
+      - production_status

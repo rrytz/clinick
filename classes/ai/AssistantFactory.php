@@ -305,12 +305,12 @@ class AssistantFactory
                 $executedTools = ['getAvailableDoctors'];
                 $availCount = $docs['count'] ?? 0;
                 $reply = "🚶 **Walk-in Patient Guide**\n\nHere is how to register a walk-in patient:\n\n1. Click the **'Book Walk-in/Phone'** button on your dashboard toolbar.\n2. Select an existing patient or fill in new patient details.\n3. Select an available doctor (**{$availCount} doctor(s) on-duty today**).\n4. Choose a time slot and click **Submit** to place them into the live queue!";
-            } elseif (str_contains($lower, 'check-in') || str_contains($lower, 'checkin')) {
+            } elseif (str_contains($lower, 'check-in') || str_contains($lower, 'checkin') || str_contains($lower, 'arrived') || str_contains($lower, 'present')) {
                 $q = $this->tools->executeToolCall('getClinicQueueOverview', [], $userId, $role, $convId);
                 $executedTools = ['getClinicQueueOverview'];
                 $total = $q['total_in_queue'] ?? 0;
                 $reply = "✅ **Patient Check-in Guide**\n\nTo check in a scheduled patient:\n\n1. Search for the patient's name in the **Live Schedule List** table.\n2. Verify their appointment time and details.\n3. Click the **'Check-In'** action button.\n\nCurrently **{$total}** patient(s) are in the active queue.";
-            } elseif (str_contains($lower, 'doctor') || str_contains($lower, 'dr') || str_contains($lower, 'schedule') || str_contains($lower, 'available')) {
+            } elseif (str_contains($lower, 'doctor') || str_contains($lower, 'dr') || str_contains($lower, 'duty') || str_contains($lower, 'schedule') || str_contains($lower, 'available')) {
                 $docs = $this->tools->executeToolCall('getAvailableDoctors', [], $userId, $role, $convId);
                 $executedTools = ['getAvailableDoctors'];
                 $listStr = [];
@@ -321,7 +321,7 @@ class AssistantFactory
                 $reply = "🩺 **Live On-Duty Doctors**\n\nHere are the doctors on-duty for today:\n\n{$docList}\n\nWould you like me to check a specific doctor's consultation slots?";
             } else {
                 // Smart Name/Demographic Search Extractor for queries like "is there someone named rivera", "find patient john", "lookup smith"
-                $cleanSearch = trim(preg_replace('/^(is there|someone|named|find|search|lookup|who is|patient|for|a|the)+/i', '', $message));
+                $cleanSearch = trim(preg_replace('/^(is there|someone|named|find|search|lookup|who is|patient|check in|check-in|mark|arrived|present|for|a|the)+/i', '', $message));
                 if (empty($cleanSearch)) {
                     $cleanSearch = $message;
                 }

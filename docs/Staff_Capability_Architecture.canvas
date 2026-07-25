@@ -1,0 +1,143 @@
+{
+  "nodes": [
+    {
+      "id": "node_input",
+      "x": 0,
+      "y": 0,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 1. Staff Chatbot Input\nNatural Language Query / Quick Action Button\nRole: `Staff`"
+    },
+    {
+      "id": "node_sec",
+      "x": 380,
+      "y": 0,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 2. SecurityGuard RBAC\n`SecurityGuard::isToolAllowed(toolName, 'Staff')`\nValidates role permissions."
+    },
+    {
+      "id": "node_registry",
+      "x": 760,
+      "y": 0,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 3. ToolRegistry Dispatcher\n`ToolRegistry::executeToolCall()`\nHybrid routing block for `Staff`."
+    },
+    {
+      "id": "node_cap1",
+      "x": 0,
+      "y": 200,
+      "width": 240,
+      "height": 120,
+      "type": "text",
+      "text": "### 📋 Live Queue Overview\n`StaffTools::getClinicQueueOverview()`\nQueries `appointments` queue status."
+    },
+    {
+      "id": "node_cap2",
+      "x": 260,
+      "y": 200,
+      "width": 240,
+      "height": 120,
+      "type": "text",
+      "text": "### 🚶 Walk-in Registration Guide\n`StaffTools::getAvailableDoctors()`\nLive doctor counts + 4-step workflow."
+    },
+    {
+      "id": "node_cap3",
+      "x": 520,
+      "y": 200,
+      "width": 240,
+      "height": 120,
+      "type": "text",
+      "text": "### ✅ Patient Check-in\n`StaffTools::checkInPatient()`\nMutates `appointments` status to `In Progress`."
+    },
+    {
+      "id": "node_cap4",
+      "x": 780,
+      "y": 200,
+      "width": 240,
+      "height": 120,
+      "type": "text",
+      "text": "### 🔍 Patient Lookup\n`StaffTools::searchPatientByName()`\nQueries `users` (PHI-safe demographic search)."
+    },
+    {
+      "id": "node_cap5",
+      "x": 1040,
+      "y": 200,
+      "width": 240,
+      "height": 120,
+      "type": "text",
+      "text": "### 🩺 Doctor Availability\n`StaffTools::getAvailableDoctors()`\nQueries `availability` JOIN `users`."
+    },
+    {
+      "id": "node_db",
+      "x": 520,
+      "y": 400,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 5. SQLite Database (clinick.db)\nTables: `appointments`, `users`, `availability`"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge1",
+      "fromNode": "node_input",
+      "fromSide": "right",
+      "toNode": "node_sec",
+      "toSide": "left"
+    },
+    {
+      "id": "edge2",
+      "fromNode": "node_sec",
+      "fromSide": "right",
+      "toNode": "node_registry",
+      "toSide": "left"
+    },
+    {
+      "id": "edge3",
+      "fromNode": "node_registry",
+      "fromSide": "bottom",
+      "toNode": "node_cap1",
+      "toSide": "top"
+    },
+    {
+      "id": "edge4",
+      "fromNode": "node_registry",
+      "fromSide": "bottom",
+      "toNode": "node_cap2",
+      "toSide": "top"
+    },
+    {
+      "id": "edge5",
+      "fromNode": "node_registry",
+      "fromSide": "bottom",
+      "toNode": "node_cap3",
+      "toSide": "top"
+    },
+    {
+      "id": "edge6",
+      "fromNode": "node_registry",
+      "fromSide": "bottom",
+      "toNode": "node_cap4",
+      "toSide": "top"
+    },
+    {
+      "id": "edge7",
+      "fromNode": "node_registry",
+      "fromSide": "bottom",
+      "toNode": "node_cap5",
+      "toSide": "top"
+    },
+    {
+      "id": "edge8",
+      "fromNode": "node_cap3",
+      "fromSide": "bottom",
+      "toNode": "node_db",
+      "toSide": "top"
+    }
+  ]
+}
