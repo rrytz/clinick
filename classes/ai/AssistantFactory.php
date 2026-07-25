@@ -371,16 +371,50 @@ class AssistantFactory
                              "• Recommendation: " . ($symRes['recommendation'] ?? 'Please consult a doctor.') . "\n\n" .
                              "⚠️ Note: " . ($symRes['disclaimer'] ?? 'This is educational guidance only, not a medical diagnosis.');
                 }
-            } elseif (str_contains($lower, 'doctor') || str_contains($lower, 'consultation') || str_contains($lower, 'book') || str_contains($lower, 'available') || str_contains($lower, 'tomorrow')) {
+            } elseif (str_contains($lower, 'service') || str_contains($lower, 'offered') || str_contains($lower, 'capability')) {
+                $docs = $this->tools->executeToolCall('getAvailableDoctors', [], $userId, $role, $convId);
+                $executedTools = ['getAvailableDoctors'];
+                $docCount = $docs['count'] ?? count($docs['doctors'] ?? []);
+
+                $reply = "🏥 **CLINICK Services Offered**\n\n" .
+                         "Here are the primary clinical services available at CLINICK:\n\n" .
+                         "1. 🩺 **General Medicine & Consultations**: Comprehensive outpatient health check-ups.\n" .
+                         "2. 👶 **Pediatric & Family Care**: Specialized consultations for infants, children, and adolescents.\n" .
+                         "3. 📅 **Online Appointment Booking**: Reserve specific consultation time slots in advance.\n" .
+                         "4. 🚶 **Walk-in & Phone Registration**: Priority queue placement for on-site walk-in patients.\n" .
+                         "5. 📊 **Real-Time Queue Tracking**: Track live queue position and estimated wait times.\n" .
+                         "6. 🩺 **AI Symptom Assessment**: Symptom analysis powered by Naive Bayes classifier.\n\n" .
+                         "Currently **{$docCount} on-duty doctor(s)** are available today. Would you like me to check available doctor schedules?";
+            } elseif (str_contains($lower, 'hour') || str_contains($lower, 'hours') || str_contains($lower, 'open')) {
+                $reply = "🕒 **CLINICK Operating Hours & Schedule**\n\n" .
+                         "• **Regular Consultation Hours**: Monday to Saturday, 8:00 AM – 5:00 PM\n" .
+                         "• **Walk-in Registration Desk**: 8:00 AM – 4:00 PM\n" .
+                         "• **Sunday Operations**: Closed for routine consultations (Emergency on-call only).\n\n" .
+                         "Would you like me to check available doctor schedules for today or tomorrow?";
+            } elseif (str_contains($lower, 'my appointment') || str_contains($lower, 'my appointments') || str_contains($lower, 'my booking') || str_contains($lower, 'view booking')) {
+                $q = $this->tools->executeToolCall('getQueueStatus', [], $userId, $role, $convId);
+                $executedTools = ['getQueueStatus'];
+                if (!empty($q['has_queue_today'])) {
+                    $reply = "📅 **Your Active Booking for Today**\n\n• **Queue Ticket**: #" . $q['queue_number'] . "\n• **Physician**: " . $q['doctor_name'] . "\n• **Patients Ahead**: " . $q['patients_ahead'] . "\n• **Est. Wait Time**: " . $q['est_wait_minutes'] . " minute(s)\n\nTrack your live queue position on your patient dashboard!";
+                } else {
+                    $reply = "📅 **My Appointments**\n\nYou currently have no active queue ticket for today.\n\nWould you like me to show you available doctors to book an appointment?";
+                }
+            } elseif (str_contains($lower, 'book') || str_contains($lower, 'booking')) {
+                $docs = $this->tools->executeToolCall('getAvailableDoctors', [], $userId, $role, $convId);
+                $executedTools = ['getAvailableDoctors'];
+                $docCount = $docs['count'] ?? count($docs['doctors'] ?? []);
+
+                $reply = "📅 **How to Book an Appointment**\n\nHere is how to schedule a consultation:\n\n1. Click the **'New Appointment'** button on your dashboard.\n2. Select your preferred doctor (**{$docCount} doctor(s) on-duty today**).\n3. Pick an available date and time slot.\n4. Enter your visit reason and click **Submit Booking**!\n\nWould you like me to list today's available doctors?";
+            } elseif (str_contains($lower, 'doctor') || str_contains($lower, 'dr') || str_contains($lower, 'consultation') || str_contains($lower, 'available') || str_contains($lower, 'tomorrow')) {
                 $docs = $this->tools->executeToolCall('getAvailableDoctors', [], $userId, $role, $convId);
                 $executedTools = ['getAvailableDoctors'];
                 $listStr = [];
                 foreach ($docs['doctors'] ?? [] as $d) {
-                    $listStr[] = "• " . $d['doctor_name'] . " (" . $d['specialization'] . ")";
+                    $listStr[] = "• **" . $d['doctor_name'] . "** (" . $d['specialization'] . ") - Status: " . $d['status'];
                 }
-                $docList = !empty($listStr) ? implode("\n", $listStr) : "• Dr. Santos (General Medicine)\n• Dr. Cruz (Pediatrics)";
+                $docList = !empty($listStr) ? implode("\n", $listStr) : "• No doctors currently listed as available today.";
 
-                $reply = "Of course! Here are our available doctors:\n\n{$docList}\n\nWhich doctor would you like to see, or would you like me to check available time slots for tomorrow?";
+                $reply = "🩺 **Available On-Duty Doctors**\n\nHere are our available doctors for today:\n\n{$docList}\n\nWhich doctor would you like to see, or would you like me to check available time slots for tomorrow?";
             } elseif (str_contains($lower, 'queue') || str_contains($lower, 'ticket') || str_contains($lower, 'wait')) {
                 $q = $this->tools->executeToolCall('getQueueStatus', [], $userId, $role, $convId);
                 $executedTools = ['getQueueStatus'];
@@ -390,7 +424,7 @@ class AssistantFactory
                     $reply = "You currently have no active queue ticket for today. Would you like me to help you book an appointment?";
                 }
             } else {
-                $reply = "Hello! I am your Personal Clinic Assistant. How can I help you today? I can help you check doctor availability, book or manage appointments, or track your queue position.";
+                $reply = "Hello! I am your Personal Clinic Assistant. How can I help you today? I can help you check doctor availability, view services offered, book or manage appointments, or track your queue position.";
             }
         }
 
