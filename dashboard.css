@@ -1331,11 +1331,17 @@ h6 {
 .form-group i {
     position: absolute;
     left: 12px;
-    top: 36px;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--text-muted);
     font-size: 0.85rem;
     pointer-events: none;
     transition: color 0.15s ease;
+    z-index: 2;
+}
+
+.form-group:has(label) i {
+    top: calc(50% + 11px);
 }
 
 .form-control {
@@ -1800,7 +1806,16 @@ h6 {
 [data-theme="dark"] .form-control {
     background-color: #0f172a;
     border-color: var(--border-color);
-    color: var(--text-main);
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .form-control::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+}
+
+[data-theme="dark"] .form-group i {
+    color: #94a3b8;
 }
 
 [data-theme="dark"] .form-control:focus {
