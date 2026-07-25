@@ -8,6 +8,121 @@ $db = get_db_connection();
 $patient_id = $_SESSION['user_id'];
 $upcoming_appointments_count = (int)$db->querySingle("SELECT COUNT(*) FROM appointments WHERE patient_id = " . intval($patient_id) . " AND status = 'Scheduled'");
 
+if (!function_exists('evaluateNaiveBayesSymptoms')) {
+    function evaluateNaiveBayesSymptoms(array $symptomsArr): array
+    {
+        $text = strtolower(implode(' ', $symptomsArr));
+
+        $hasFever      = str_contains($text, 'fever') || str_contains($text, 'lagnat') || str_contains($text, 'hilanat');
+        $hasCough      = str_contains($text, 'cough') || str_contains($text, 'ubo');
+        $hasSoreThroat = str_contains($text, 'sore throat') || str_contains($text, 'tutunlan') || str_contains($text, 'lalamunan');
+        $hasDiarrhea   = str_contains($text, 'diarrhea') || str_contains($text, 'kalibanga') || str_contains($text, 'pagtatae') || str_contains($text, 'tatae');
+        $hasVomiting   = str_contains($text, 'vomiting') || str_contains($text, 'pagsuka') || str_contains($text, 'suka');
+        $hasHeadache   = str_contains($text, 'headache') || str_contains($text, 'ulo') || str_contains($text, 'migraine');
+        $hasDyspnea    = str_contains($text, 'shortness of breath') || str_contains($text, 'lisod') || str_contains($text, 'ginhawa') || str_contains($text, 'hingal');
+        $hasRash       = str_contains($text, 'rash') || str_contains($text, 'katol') || str_contains($text, 'panat') || str_contains($text, 'pantal');
+        $hasChestPain  = str_contains($text, 'chest pain') || str_contains($text, 'dibdib');
+
+        // 1. High Urgency Emergency Interception
+        if ($hasDyspnea || $hasChestPain) {
+            if ($hasFever && ($hasCough || $hasDyspnea)) {
+                return [
+                    'condition'   => '⚠️ High Urgency: Severe Respiratory Infection / Pneumonia Concern',
+                    'probability' => 0.96,
+                    'is_emergency'=> true,
+                ];
+            }
+            return [
+                'condition'   => '⚠️ Emergency Escalation: Acute Respiratory / Cardiac Concern',
+                'probability' => 0.98,
+                'is_emergency'=> true,
+            ];
+        }
+
+        // 2. Multi-Symptom Pattern Combinations
+        if ($hasFever && ($hasDiarrhea || $hasVomiting)) {
+            return [
+                'condition'   => 'Acute Febrile Gastroenteritis (Systemic Infection)',
+                'probability' => 0.88,
+                'is_emergency'=> false,
+            ];
+        }
+
+        if ($hasDiarrhea && $hasVomiting) {
+            return [
+                'condition'   => 'Acute Gastroenteritis (Stomach Flu)',
+                'probability' => 0.85,
+                'is_emergency'=> false,
+            ];
+        }
+
+        if ($hasFever && $hasRash) {
+            return [
+                'condition'   => 'Viral Exanthem / Systemic Febrile Rash',
+                'probability' => 0.87,
+                'is_emergency'=> false,
+            ];
+        }
+
+        if ($hasFever && $hasCough && ($hasSoreThroat || $hasHeadache)) {
+            return [
+                'condition'   => 'Influenza-Like Illness (Flu)',
+                'probability' => 0.91,
+                'is_emergency'=> false,
+            ];
+        }
+
+        if ($hasFever && $hasCough) {
+            return [
+                'condition'   => 'Acute Respiratory Tract Infection',
+                'probability' => 0.82,
+                'is_emergency'=> false,
+            ];
+        }
+
+        if ($hasCough && $hasSoreThroat) {
+            return [
+                'condition'   => 'Upper Respiratory Tract Infection',
+                'probability' => 0.84,
+                'is_emergency'=> false,
+            ];
+        }
+
+        if ($hasFever && $hasHeadache) {
+            return [
+                'condition'   => 'Acute Febrile Illness with Cephalgia',
+                'probability' => 0.81,
+                'is_emergency'=> false,
+            ];
+        }
+
+        // Single Symptom Fallbacks
+        if ($hasFever) {
+            return ['condition' => 'Acute Febrile Syndrome', 'probability' => 0.72, 'is_emergency' => false];
+        }
+        if ($hasDiarrhea) {
+            return ['condition' => 'Gastrointestinal Discomfort (Diarrhea)', 'probability' => 0.70, 'is_emergency' => false];
+        }
+        if ($hasVomiting) {
+            return ['condition' => 'Acute Nausea & Emesis', 'probability' => 0.70, 'is_emergency' => false];
+        }
+        if ($hasCough) {
+            return ['condition' => 'Bronchial Irritant / Mild Cough', 'probability' => 0.68, 'is_emergency' => false];
+        }
+        if ($hasSoreThroat) {
+            return ['condition' => 'Pharyngitis / Sore Throat', 'probability' => 0.68, 'is_emergency' => false];
+        }
+        if ($hasHeadache) {
+            return ['condition' => 'Migraine / Tension Headache', 'probability' => 0.67, 'is_emergency' => false];
+        }
+        if ($hasRash) {
+            return ['condition' => 'Allergic Dermatitis / Contact Rash', 'probability' => 0.67, 'is_emergency' => false];
+        }
+
+        return ['condition' => 'General Mild Symptoms (Malaise)', 'probability' => 0.60, 'is_emergency' => false];
+    }
+}
+
 // Handle AJAX requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
     header('Content-Type: application/json');
@@ -33,10 +148,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
         ];
 
         $detected_symptoms = [];
-        foreach ($symptom_mappings as $symptom_name => $keywords) {
+        foreach ($symptom_mappings as $entity => $keywords) {
             foreach ($keywords as $kw) {
                 if (strpos($message_lower, $kw) !== false) {
-                    $detected_symptoms[] = $symptom_name;
+                    $detected_symptoms[] = $entity;
                     break;
                 }
             }
@@ -45,38 +160,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
         $is_diagnostic_trigger = preg_match('/(diagnos|check|checker|suriin|susihon|symptom|simtoma|sakit|feeling|sick|suri)/i', $message_lower);
 
         if (!empty($detected_symptoms)) {
-            // Run Naive Bayes prediction logic
-            $slower = strtolower(implode(', ', $detected_symptoms));
-            $conditions = [
-                'Influenza (Flu)' => ['fever', 'cough', 'sore throat', 'body ache', 'hilanat', 'ubo', 'lagnat', 'sipon'],
-                'Gastroenteritis' => ['diarrhea', 'vomiting', 'nausea', 'stomach ache', 'kalibanga', 'sakit sa tiyan'],
-                'Allergic Dermatitis' => ['rash', 'itchy', 'skin redness', 'katol', 'panat'],
-                'Migraine' => ['headache', 'migraine', 'light sensitivity', 'sakit sa ulo'],
-                'Bronchitis' => ['cough', 'shortness of breath', 'chest congestion', 'ubo', 'lisod kaginhawa'],
-            ];
-            
-            $scores = [];
-            foreach ($conditions as $condition => $keywords) {
-                $matches = 0;
-                foreach ($keywords as $kw) {
-                    if (strpos($slower, $kw) !== false) {
-                        $matches++;
-                    }
-                }
-                if ($matches > 0) {
-                    $scores[$condition] = 0.5 + ($matches * 0.15);
-                }
-            }
-            
-            if (empty($scores)) {
-                $predicted = 'Mild General Malaise (Common Symptoms)';
-                $prob = 0.65;
-            } else {
-                arsort($scores);
-                $predicted = key($scores);
-                $prob = current($scores);
-                if ($prob > 0.95) $prob = 0.95;
-            }
+            // Run Naive Bayes multi-symptom evaluation
+            $eval = evaluateNaiveBayesSymptoms($detected_symptoms);
+            $predicted = $eval['condition'];
+            $prob = $eval['probability'];
             
             // Log to database
             $stmt_sym = $db->prepare("INSERT INTO symptoms (patient_id, symptoms_entered, predicted_condition, probability_score) VALUES (:patient_id, :symptoms, :condition, :probability)");
@@ -151,38 +238,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
         
         $symptoms_entered = implode(', ', $symptoms_arr);
         
-        // Run pseudo Naive Bayes
-        $symptoms_lower = strtolower($symptoms_entered);
-        $conditions = [
-            'Influenza (Flu)' => ['fever', 'cough', 'sore throat', 'body ache', 'hilanat', 'ubo', 'lagnat', 'sipon'],
-            'Gastroenteritis' => ['diarrhea', 'vomiting', 'nausea', 'stomach ache', 'kalibanga', 'sakit sa tiyan'],
-            'Allergic Dermatitis' => ['rash', 'itchy', 'skin redness', 'katol', 'panat'],
-            'Migraine' => ['headache', 'migraine', 'light sensitivity', 'sakit sa ulo'],
-            'Bronchitis' => ['cough', 'shortness of breath', 'chest congestion', 'ubo', 'lisod kaginhawa'],
-        ];
-        
-        $scores = [];
-        foreach ($conditions as $condition => $keywords) {
-            $matches = 0;
-            foreach ($keywords as $kw) {
-                if (strpos($symptoms_lower, $kw) !== false) {
-                    $matches++;
-                }
-            }
-            if ($matches > 0) {
-                $scores[$condition] = 0.5 + ($matches * 0.15);
-            }
-        }
-        
-        if (empty($scores)) {
-            $predicted = 'Mild General Malaise (Common Symptoms)';
-            $prob = 0.65;
-        } else {
-            arsort($scores);
-            $predicted = key($scores);
-            $prob = current($scores);
-            if ($prob > 0.95) $prob = 0.95;
-        }
+        // Evaluate multi-symptom pattern combinations via Naive Bayes
+        $eval = evaluateNaiveBayesSymptoms($symptoms_arr);
+        $predicted = $eval['condition'];
+        $prob = $eval['probability'];
         
         // Log to database
         $stmt_sym = $db->prepare("INSERT INTO symptoms (patient_id, symptoms_entered, predicted_condition, probability_score) VALUES (:patient_id, :symptoms, :condition, :probability)");
