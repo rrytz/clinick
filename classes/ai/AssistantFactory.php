@@ -405,16 +405,19 @@ class AssistantFactory
                 $docCount = $docs['count'] ?? count($docs['doctors'] ?? []);
 
                 $reply = "📅 **How to Book an Appointment**\n\nHere is how to schedule a consultation:\n\n1. Click the **'New Appointment'** button on your dashboard.\n2. Select your preferred doctor (**{$docCount} doctor(s) on-duty today**).\n3. Pick an available date and time slot.\n4. Enter your visit reason and click **Submit Booking**!\n\nWould you like me to list today's available doctors?";
-            } elseif (str_contains($lower, 'doctor') || str_contains($lower, 'dr') || str_contains($lower, 'consultation') || str_contains($lower, 'available') || str_contains($lower, 'tomorrow')) {
-                $docs = $this->tools->executeToolCall('getAvailableDoctors', [], $userId, $role, $convId);
+            } elseif (str_contains($lower, 'doctor') || str_contains($lower, 'dr') || str_contains($lower, 'consultation') || str_contains($lower, 'available') || str_contains($lower, 'tomorrow') || in_array($lower, ['yes', 'yep', 'sure', 'ok', 'okay', 'please', 'check tomorrow'], true)) {
+                $targetDate = (str_contains($lower, 'tomorrow') || str_contains($lower, 'yes')) ? date('Y-m-d', strtotime('+1 day')) : date('Y-m-d');
+                $dateLabel  = (str_contains($lower, 'tomorrow') || str_contains($lower, 'yes')) ? 'Tomorrow (' . date('M j, Y', strtotime('+1 day')) . ')' : 'Today (' . date('M j, Y') . ')';
+
+                $docs = $this->tools->executeToolCall('getAvailableDoctors', ['date' => $targetDate], $userId, $role, $convId);
                 $executedTools = ['getAvailableDoctors'];
                 $listStr = [];
                 foreach ($docs['doctors'] ?? [] as $d) {
                     $listStr[] = "• **" . $d['doctor_name'] . "** (" . $d['specialization'] . ") - Status: " . $d['status'];
                 }
-                $docList = !empty($listStr) ? implode("\n", $listStr) : "• No doctors currently listed as available today.";
+                $docList = !empty($listStr) ? implode("\n", $listStr) : "• No doctors currently listed as available for " . $dateLabel . ".";
 
-                $reply = "🩺 **Available On-Duty Doctors**\n\nHere are our available doctors for today:\n\n{$docList}\n\nWhich doctor would you like to see, or would you like me to check available time slots for tomorrow?";
+                $reply = "🩺 **Available On-Duty Doctors for {$dateLabel}**\n\n{$docList}\n\nTo schedule an appointment with any of these doctors, click the **'New Appointment'** button on your dashboard toolbar!";
             } elseif (str_contains($lower, 'queue') || str_contains($lower, 'ticket') || str_contains($lower, 'wait')) {
                 $q = $this->tools->executeToolCall('getQueueStatus', [], $userId, $role, $convId);
                 $executedTools = ['getQueueStatus'];
