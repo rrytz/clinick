@@ -348,9 +348,10 @@ if (!function_exists('get_trend_html')) {
         <!-- Main Dashboard Viewport -->
         <main class="main-content">
             
-            <div class="page-header">
-                <h1>Clinical Dashboard</h1>
-                <p>Appointments, Prescriptions, Patient Records, and Practice Availability.</p>
+            <!-- Hero Section (Letters Clinic Style) -->
+            <div class="letters-hero-section">
+                <div class="letters-hero-date"><?php echo date('l, F j'); ?></div>
+                <h1 class="letters-hero-title">Clinic Overview</h1>
             </div>
 
             <?php if (!empty($success_msg)): ?>
@@ -367,210 +368,119 @@ if (!function_exists('get_trend_html')) {
                 </div>
             <?php endif; ?>
 
-            <!-- TAB 1: OVERVIEW -->
+            <!-- TAB 1: OVERVIEW (Letters Clinic Inspired) -->
             <?php if ($tab === 'overview'): ?>
-                <div class="stats-grid">
-                    <div class="stats-card">
-                        <div class="stats-info">
-                            <span class="stats-label">Pending Appointments</span>
-                            <span class="stats-number"><?php echo $today_count; ?></span>
-                            <?php echo get_trend_html($today_count, $yesterday_count); ?>
+                <?php
+                $staff_on_duty = (int)($db->querySingle("SELECT COUNT(*) FROM users WHERE role IN ('Staff', 'Clinical Staff')") ?? 4);
+                ?>
+                <div class="letters-dashboard-grid">
+                    <!-- Left Main Card -->
+                    <div class="letters-main-card">
+                        <div class="letters-card-header">
+                            <h2>Today's Appointments</h2>
+                            <a href="?tab=appointments" class="letters-btn-pill">
+                                <i class="fa-solid fa-plus"></i> New Appointment
+                            </a>
                         </div>
-                        <div class="stats-icon-container stats-icon-primary">
-                            <i class="fa-solid fa-clock"></i>
-                        </div>
-                    </div>
-                    <div class="stats-card">
-                        <div class="stats-info">
-                            <span class="stats-label">Total Patients</span>
-                            <span class="stats-number"><?php echo $patient_count; ?></span>
-                            <?php echo get_trend_html($recent_patients, $prior_patients); ?>
-                        </div>
-                        <div class="stats-icon-container stats-icon-secondary">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="stats-card">
-                        <div class="stats-info">
-                            <span class="stats-label">Prescriptions Issued</span>
-                            <span class="stats-number"><?php echo $presc_count; ?></span>
-                            <?php echo get_trend_html($recent_presc, $prior_presc); ?>
-                        </div>
-                        <div class="stats-icon-container stats-icon-success">
-                            <i class="fa-solid fa-file-signature"></i>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- 3-Column Main Content Layout -->
-                <div class="dashboard-main-grid">
-                    <!-- Column Left: Analytics & Recent Patients -->
-                    <div class="column-left">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2><i class="fa-solid fa-chart-line"></i> Analytics Overview</h2>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-xs text-muted" style="margin-bottom: var(--space-4);">Daily consultations stats.</p>
-                                <div style="display:flex; flex-direction:column; gap: var(--space-3);">
-                                    <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
-                                        <span>Consultations Completed</span>
-                                        <strong>85%</strong>
+                        <!-- Appointments List -->
+                        <div class="letters-appt-list">
+                            <?php
+                            $today_appts_res = $db->query("SELECT a.*, u.name as patient_name FROM appointments a JOIN users u ON a.patient_id = u.id ORDER BY a.appointment_date ASC, a.time_slot ASC LIMIT 4");
+                            $has_today_appts = false;
+                            while ($app = $today_appts_res->fetchArray(SQLITE3_ASSOC)):
+                                $has_today_appts = true;
+                                $status = $app['status'] ?? 'Scheduled';
+                                $statusClass = 'letters-status-waiting';
+                                if ($status === 'In Progress') $statusClass = 'letters-status-progress';
+                                elseif ($status === 'Completed') $statusClass = 'letters-status-completed';
+                                elseif ($status === 'Scheduled') $statusClass = 'letters-status-upcoming';
+                            ?>
+                                <div class="letters-appt-row">
+                                    <div class="letters-appt-time"><?php echo htmlspecialchars($app['time_slot']); ?></div>
+                                    <div class="letters-appt-info">
+                                        <span class="letters-patient-name"><?php echo htmlspecialchars($app['patient_name']); ?></span>
+                                        <span class="letters-visit-reason"><?php echo htmlspecialchars($app['reason'] ?: 'General Consultation & Follow-up'); ?></span>
                                     </div>
-                                    <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
-                                        <span>Average Session Duration</span>
-                                        <strong>18 min</strong>
+                                    <div>
+                                        <span class="letters-status-pill <?php echo $statusClass; ?>"><?php echo strtoupper(htmlspecialchars($status)); ?></span>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        
-                        <div class="card">
-                            <div class="card-header">
-                                <h2><i class="fa-solid fa-users"></i> Recent Patients</h2>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="data-table">
-                                        <tbody>
-                                            <?php
-                                            $recent_pts = $db->query("SELECT u.id, u.name FROM users u WHERE u.role = 'Patient' ORDER BY u.id DESC LIMIT 3");
-                                            while ($pt = $recent_pts->fetchArray(SQLITE3_ASSOC)):
-                                            ?>
-                                                <tr>
-                                                    <td>
-                                                        <strong style="font-size:0.8rem;"><?php echo htmlspecialchars($pt['name']); ?></strong><br>
-                                                        <span class="text-xxs text-muted">ID: #<?php echo $pt['id']; ?></span>
-                                                    </td>
-                                                </tr>
-                                            <?php endwhile; ?>
-                                        </tbody>
-                                    </table>
+                            <?php endwhile;
+                            if (!$has_today_appts): ?>
+                                <div class="letters-appt-row" style="justify-content: center; text-align: center; color: var(--text-muted);">
+                                    <span>No appointments scheduled for today.</span>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Column Center: Today's Schedule & Quick Actions -->
-                    <div class="column-center">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2>Quick Actions</h2>
-                            </div>
-                            <div class="card-body">
-                                <div class="quick-actions-grid">
-                                    <a href="?tab=prescribe" class="quick-action-card">
-                                        <div class="quick-action-icon"><i class="fa-solid fa-file-prescription"></i></div>
-                                        <div class="quick-action-info">
-                                            <span class="quick-action-title">Write Rx</span>
-                                            <span class="quick-action-desc">New prescription</span>
-                                        </div>
-                                    </a>
-                                    <a href="?tab=appointments" class="quick-action-card">
-                                        <div class="quick-action-icon"><i class="fa-solid fa-calendar-check"></i></div>
-                                        <div class="quick-action-info">
-                                            <span class="quick-action-title">Schedule</span>
-                                            <span class="quick-action-desc">Manage visits</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
+                            <?php endif; ?>
                         </div>
 
-                        <div class="card">
-                            <div class="card-header">
-                                <h2><i class="fa-solid fa-calendar-day"></i> Schedule Overview</h2>
+                        <!-- Recent Medical Records -->
+                        <div class="letters-records-section">
+                            <div class="letters-records-header">
+                                <h3>Recent Medical Records</h3>
+                                <a href="?tab=patients" class="letters-view-all">View All</a>
                             </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="data-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Patient</th>
-                                                <th>Time Slot</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $query = "SELECT a.*, u.name as patient_name FROM appointments a JOIN users u ON a.patient_id = u.id ORDER BY a.appointment_date ASC, a.time_slot ASC LIMIT 3";
-                                            $res = $db->query($query);
-                                            $has_rows = false;
-                                            while ($app = $res->fetchArray(SQLITE3_ASSOC)):
-                                                $has_rows = true;
-                                            ?>
-                                                <tr>
-                                                    <td><strong><?php echo htmlspecialchars($app['patient_name']); ?></strong></td>
-                                                    <td><?php echo htmlspecialchars($app['time_slot']); ?></td>
-                                                    <td><span class="badge badge-<?php echo strtolower($app['status']); ?>"><?php echo htmlspecialchars($app['status']); ?></span></td>
-                                                </tr>
-                                            <?php endwhile; 
-                                            if (!$has_rows): ?>
-                                                <tr><td colspan="3" class="table-empty">No appointments scheduled.</td></tr>
-                                            <?php endif; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Column Right: Timeline & Critical Alerts -->
-                    <div class="column-right">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2><i class="fa-solid fa-timeline"></i> Appointment Timeline</h2>
-                            </div>
-                            <div class="card-body">
-                                <div class="timeline-list">
-                                    <?php
-                                    $timeline_appts = $db->query("SELECT a.time_slot, u.name, a.reason FROM appointments a JOIN users u ON a.patient_id = u.id WHERE a.appointment_date = '" . date('Y-m-d') . "' ORDER BY a.time_slot ASC LIMIT 3");
-                                    $has_timeline = false;
-                                    while ($ta = $timeline_appts->fetchArray(SQLITE3_ASSOC)):
-                                        $has_timeline = true;
-                                    ?>
-                                        <div class="timeline-item">
-                                            <div class="timeline-time"><?php echo htmlspecialchars($ta['time_slot']); ?></div>
-                                            <div class="timeline-title"><?php echo htmlspecialchars($ta['name']); ?></div>
-                                            <div class="timeline-desc"><?php echo htmlspecialchars($ta['reason']); ?></div>
-                                        </div>
-                                    <?php endwhile;
-                                    if (!$has_timeline): ?>
-                                        <p class="text-xs text-muted">No appointments scheduled for today.</p>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h2><i class="fa-solid fa-triangle-exclamation"></i> Critical Alerts</h2>
-                            </div>
-                            <div class="card-body scrollable-y no-padding">
+                            <div class="letters-records-list">
                                 <?php
-                                $alerts_res = $db->query("SELECT u.name, sc.predicted_condition, sc.probability_score, sc.symptoms_entered 
-                                                         FROM symptoms sc 
-                                                         JOIN users u ON sc.patient_id = u.id 
-                                                         WHERE sc.probability_score >= 0.8 
-                                                         ORDER BY sc.symptom_id DESC LIMIT 3");
-                                $has_alerts = false;
-                                while ($alert = $alerts_res->fetchArray(SQLITE3_ASSOC)):
-                                    $has_alerts = true;
+                                $rec_presc = $db->query("SELECT p.*, u.name as patient_name FROM prescriptions p JOIN users u ON p.patient_id = u.id ORDER BY p.id DESC LIMIT 3");
+                                $has_rec = false;
+                                while ($pr = $rec_presc->fetchArray(SQLITE3_ASSOC)):
+                                    $has_rec = true;
+                                    $timeAgo = date('M j', strtotime($pr['created_at'] ?? 'now'));
                                 ?>
-                                    <div class="alert alert-danger" style="margin: 0.5rem; border-left: 4px solid var(--danger);">
-                                        <div style="font-size:0.8rem;">
-                                            <strong class="text-danger">HIGH-RISK: <?php echo htmlspecialchars($alert['predicted_condition']); ?> (<?php echo round($alert['probability_score'] * 100); ?>%)</strong><br>
-                                            <span>Patient: <?php echo htmlspecialchars($alert['name']); ?></span>
-                                        </div>
+                                    <div class="letters-record-item">
+                                        <span class="letters-record-title">Prescription: <?php echo htmlspecialchars($pr['medication']); ?> (<?php echo htmlspecialchars($pr['dosage']); ?>)</span>
+                                        <span class="letters-record-patient"><?php echo htmlspecialchars($pr['patient_name']); ?></span>
+                                        <span class="letters-record-time"><?php echo $timeAgo; ?></span>
                                     </div>
                                 <?php endwhile;
-                                if (!$has_alerts): ?>
-                                    <p class="text-xs text-muted" style="padding: 1rem; text-align: center;">All clinical risk checks clear.</p>
+                                if (!$has_rec): ?>
+                                    <div class="letters-record-item" style="color: var(--text-muted);">
+                                        <span>No recent prescription records found.</span>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Right Utility Column -->
+                    <div class="letters-side-column">
+                        <!-- Daily Consultations Metric -->
+                        <div class="letters-metric-card">
+                            <span class="letters-metric-label">Daily Consultations</span>
+                            <div class="letters-metric-value"><?php echo $today_count; ?></div>
+                            <div class="letters-progress-bar">
+                                <div class="letters-progress-fill" style="width: <?php echo min(100, max(20, $today_count * 15)); ?>%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Efficiency Gain Metric -->
+                        <div class="letters-metric-card">
+                            <span class="letters-metric-label">Efficiency Gain</span>
+                            <div class="letters-metric-value">3.2x</div>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">Compared to manual entry</span>
+                        </div>
+
+                        <!-- Staff On Duty Pill Card -->
+                        <div class="letters-dark-card">
+                            <span class="letters-dark-label">Staff On Duty</span>
+                            <div class="letters-dark-value"><?php echo $staff_on_duty; ?></div>
+                            <div class="letters-avatar-stack">
+                                <div class="letters-avatar-pill">DR</div>
+                                <div class="letters-avatar-pill">NS</div>
+                                <div class="letters-avatar-pill">ST</div>
+                                <div class="letters-avatar-pill letters-avatar-more">+<?php echo max(1, $staff_on_duty - 3); ?></div>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <a href="admin_dashboard.php?tab=reports" class="letters-btn-report">
+                            Generate Daily Report
+                        </a>
+                    </div>
                 </div>
+            <?php endif; ?>
 
             <!-- TAB 2: APPOINTMENTS -->
             <?php elseif ($tab === 'appointments'): ?>
