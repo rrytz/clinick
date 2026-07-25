@@ -1010,7 +1010,7 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
                                     <div style="display: flex; flex-direction: column; gap: 1rem;">
                                         <!-- Symptom Checker History -->
                                         <div class="profile-section-card" style="flex-grow: 1;">
-                                            <div class="profile-section-title">Symptoms History (NaÃ¯ve Bayes)</div>
+                                            <div class="profile-section-title">Symptoms History (Naive Bayes)</div>
                                             <div style="max-height: 180px; overflow-y: auto;">
                                                 <?php
                                                 $stmt_sym = $db->prepare("SELECT * FROM symptoms WHERE patient_id = :pid ORDER BY created_at DESC");

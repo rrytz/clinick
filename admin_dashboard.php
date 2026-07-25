@@ -1313,7 +1313,7 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
 
                                         <!-- Diagnostic Symptom Checker History -->
                                         <div class="profile-section-card">
-                                            <div style="font-weight:700; color:var(--primary); margin-bottom: 0.75rem; border-bottom:1px solid var(--border-color); padding-bottom:0.25rem;">Symptom Checker History (NaÃƒÂ¯ve Bayes)</div>
+                                            <div style="font-weight:700; color:var(--primary); margin-bottom: 0.75rem; border-bottom:1px solid var(--border-color); padding-bottom:0.25rem;">Symptom Checker History (Naive Bayes)</div>
                                             <div style="max-height: 250px; overflow-y:auto;">
                                                 <?php
                                                 $stmt_sym = $db->prepare("SELECT * FROM symptoms WHERE patient_id = :pid ORDER BY created_at DESC");
@@ -1623,7 +1623,7 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
                             $preview_rows[] = [$r['col1'], $r['col2'], $r['col3'], $r['col4'], $r['col5']];
                         }
                     } elseif ($report_type === 'disease_trends') {
-                        $report_title = "Disease Classification Report (NaÃƒÂ¯ve Bayes)";
+                        $report_title = "Disease Classification Report (Naive Bayes)";
                         $sql = "SELECT predicted_condition as col1, COUNT(*) as col2, ROUND(AVG(probability_score) * 100, 1) || '%' as col3, 'N/A' as col4, 'Active' as col5 
                                 FROM symptoms 
                                 GROUP BY predicted_condition ORDER BY col2 DESC";
@@ -1651,7 +1651,7 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
                                     <option value="consultations" <?php echo $report_type === 'consultations' ? 'selected' : ''; ?>>Daily Consultation</option>
                                     <option value="records_summary" <?php echo $report_type === 'records_summary' ? 'selected' : ''; ?>>Electronic Medical Records Summary</option>
                                     <option value="queue_waiting" <?php echo $report_type === 'queue_waiting' ? 'selected' : ''; ?>>Priority Queue & Waiting Time</option>
-                                    <option value="disease_trends" <?php echo $report_type === 'disease_trends' ? 'selected' : ''; ?>>Disease Classification (NaÃƒÂ¯ve Bayes)</option>
+                                    <option value="disease_trends" <?php echo $report_type === 'disease_trends' ? 'selected' : ''; ?>>Disease Classification (Naive Bayes)</option>
                                     <option value="visit_history" <?php echo $report_type === 'visit_history' ? 'selected' : ''; ?>>Patient Visit History</option>
                                     <option value="doctor_workload" <?php echo $report_type === 'doctor_workload' ? 'selected' : ''; ?>>Doctor Workload & Performance</option>
                                     <option value="noshows" <?php echo $report_type === 'noshows' ? 'selected' : ''; ?>>No-Show & Cancellation</option>
@@ -1926,7 +1926,7 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
                              </div>
 
                              <div class="config-card">
-                                 <div class="config-section-title">NaÃƒÂ¯ve Bayes Symptom Classifications</div>
+                                 <div class="config-section-title">Naive Bayes Symptom Classifications</div>
                                  <p class="config-section-desc">Comma separated lists of symptoms patient users can check off in the diagnostic tab.</p>
                                  <input type="text" name="symptoms" class="form-control" value="<?php echo htmlspecialchars($symptoms_val); ?>" required>
                              </div>

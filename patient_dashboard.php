@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
         $is_diagnostic_trigger = preg_match('/(diagnos|check|checker|suriin|susihon|symptom|simtoma|sakit|feeling|sick|suri)/i', $message_lower);
 
         if (!empty($detected_symptoms)) {
-            // Run NaÃƒÆ’Ã‚Â¯ve Bayes prediction logic
+            // Run Naive Bayes prediction logic
             $slower = strtolower(implode(', ', $detected_symptoms));
             $conditions = [
                 'Influenza (Flu)' => ['fever', 'cough', 'sore throat', 'body ache', 'hilanat', 'ubo', 'lagnat', 'sipon'],
@@ -87,11 +87,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
             $stmt_sym->execute();
 
             if ($lang === 'Filipino') {
-                $response = "Batay sa mga simtomas na inyong binanggit (" . implode(', ', $detected_symptoms) . "), ang aking pagsusuri gamit ang NaÃƒÆ’Ã‚Â¯ve Bayes ay nagpapahiwatig ng **" . $predicted . "** (may posibilidad na " . round($prob * 100) . "%).\n\nPaalala: Ito ay gabay lamang at hindi kapalit ng pormal na diagnosis. Kung malubha ang inyong nararamdaman, mangyaring mag-book ng appointment.";
+                $response = "Batay sa mga simtomas na inyong binanggit (" . implode(', ', $detected_symptoms) . "), ang aking pagsusuri gamit ang Naive Bayes ay nagpapahiwatig ng **" . $predicted . "** (may posibilidad na " . round($prob * 100) . "%).\n\nPaalala: Ito ay gabay lamang at hindi kapalit ng pormal na diagnosis. Kung malubha ang inyong nararamdaman, mangyaring mag-book ng appointment.";
             } elseif ($lang === 'Cebuano') {
-                $response = "Base sa mga simtomas nga imong gihisgutan (" . implode(', ', $detected_symptoms) . "), ang akong pagtuki gamit ang NaÃƒÆ’Ã‚Â¯ve Bayes nagtagna ug **" . $predicted . "** (adunay posibilidad nga " . round($prob * 100) . "%).\n\nPahinumdom: Dili kini pormal nga diagnosis gikan sa doktor. Kung seryoso ang imong gibati, palihug pag-book og appointment.";
+                $response = "Base sa mga simtomas nga imong gihisgutan (" . implode(', ', $detected_symptoms) . "), ang akong pagtuki gamit ang Naive Bayes nagtagna ug **" . $predicted . "** (adunay posibilidad nga " . round($prob * 100) . "%).\n\nPahinumdom: Dili kini pormal nga diagnosis gikan sa doktor. Kung seryoso ang imong gibati, palihug pag-book og appointment.";
             } else {
-                $response = "Based on the symptoms you mentioned (" . implode(', ', $detected_symptoms) . "), my NaÃƒÆ’Ã‚Â¯ve Bayes interpretation predicts **" . $predicted . "** (with a probability of " . round($prob * 100) . "%).\n\nDisclaimer: This is for informational purposes and does not replace a professional clinical diagnosis. If symptoms persist, please book a consultation.";
+                $response = "Based on the symptoms you mentioned (" . implode(', ', $detected_symptoms) . "), my Naive Bayes interpretation predicts **" . $predicted . "** (with a probability of " . round($prob * 100) . "%).\n\nDisclaimer: This is for informational purposes and does not replace a professional clinical diagnosis. If symptoms persist, please book a consultation.";
             }
         } elseif ($is_diagnostic_trigger) {
             if ($lang === 'Filipino') {
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
             } elseif ($lang === 'Cebuano') {
                 $response = "Matabangan ko ikaw sa pagsusi sa imong mga simtomas. Palihug ilista o isulti ang mga simtomas nga imong gibati (pananglitan: hilanat, ubo, sore throat, kalibanga, pagsuka, sakit sa ulo, lisod kaginhawa, rashes).";
             } else {
-                $response = "I can help you interpret your symptoms using our NaÃƒÆ’Ã‚Â¯ve Bayes analyzer. Please tell me what symptoms you are currently experiencing (e.g. fever, cough, sore throat, diarrhea, vomiting, headache, shortness of breath, skin rash).";
+                $response = "I can help you interpret your symptoms using our Naive Bayes analyzer. Please tell me what symptoms you are currently experiencing (e.g. fever, cough, sore throat, diarrhea, vomiting, headache, shortness of breath, skin rash).";
             }
         } else {
             // General Conversational Flow
@@ -1295,13 +1295,13 @@ $presc_count = $stmt_presc->execute()->fetchArray(SQLITE3_ASSOC)['count'] ?? 0;
             <?php elseif ($tab === 'symptom-checker'): ?>
                 <div class="card" style="max-width: 850px;">
                     <div class="card-header">
-                        <h2><i class="fa-solid fa-stethoscope"></i> NaÃƒÆ’Ã‚Â¯ve Bayes Symptom Interpretation</h2>
+                        <h2><i class="fa-solid fa-stethoscope"></i> Naive Bayes Symptom Interpretation</h2>
                         <span class="badge badge-warning"><i class="fa-solid fa-robot"></i> Clinical Assistant Mode</span>
                     </div>
                     <div class="card-body">
                         <div style="background: rgba(239, 68, 68, 0.05); border-left: 4px solid var(--danger); padding: 1rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 2rem;">
                             <strong style="color: var(--danger); font-size: 0.95rem; display: block; margin-bottom: 0.25rem;"><i class="fa-solid fa-triangle-exclamation"></i> IMPORTANT MEDICAL DISCLAIMER</strong>
-                            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">This automated symptom checker is powered by a simulated NaÃƒÆ’Ã‚Â¯ve Bayes classifier. It is designed for informational and educational purposes only. It does NOT substitute professional clinical consultation, diagnosis, or treatment. Always seek immediate emergency medical services if experiencing severe symptoms.</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">This automated symptom checker is powered by a simulated Naive Bayes classifier. It is designed for informational and educational purposes only. It does NOT substitute professional clinical consultation, diagnosis, or treatment. Always seek immediate emergency medical services if experiencing severe symptoms.</p>
                         </div>
                         
                         <form id="symptom_checker_form" onsubmit="checkSymptoms(event)">
@@ -1365,7 +1365,7 @@ $presc_count = $stmt_presc->execute()->fetchArray(SQLITE3_ASSOC)['count'] ?? 0;
                             </div>
                             
                             <div style="margin-top: 1rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
-                                <strong>System Note:</strong> The NaÃƒÆ’Ã‚Â¯ve Bayes classifier calculates the probability using independent likelihood features of symptoms. The logs of this symptom checks have been securely saved to your health history.
+                                <strong>System Note:</strong> The Naive Bayes classifier calculates the probability using independent likelihood features of symptoms. The logs of this symptom checks have been securely saved to your health history.
                             </div>
                         </div>
                     </div>
