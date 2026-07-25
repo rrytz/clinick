@@ -1,0 +1,106 @@
+{
+  "nodes": [
+    {
+      "id": "1111111111111111",
+      "type": "text",
+      "text": "## Staff User Request\nRole: `Staff` (Frontdesk)",
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 100,
+      "color": "1"
+    },
+    {
+      "id": "2222222222222222",
+      "type": "text",
+      "text": "## ToolRegistry::getDeclarationsForRole('Staff')\nReturns exact Staff declarations from `StaffTools::getDeclarations()`\n- `getAvailableDoctors`\n- `getDoctorSchedule`\n- `getClinicQueueOverview`\n- `searchPatientByName`\n- `checkInPatient`\n- `getDailyStats`\n- `getPendingApprovals`",
+      "x": 340,
+      "y": -120,
+      "width": 360,
+      "height": 180,
+      "color": "4"
+    },
+    {
+      "id": "3333333333333333",
+      "type": "text",
+      "text": "## SecurityGuard Authorization\nVerifies `isToolAllowed(tool, 'Staff')`",
+      "x": 340,
+      "y": 100,
+      "width": 360,
+      "height": 100,
+      "color": "2"
+    },
+    {
+      "id": "4444444444444444",
+      "type": "text",
+      "text": "## Hybrid Dispatcher (`elseif ($role === 'Staff')`)\nRoutes tool calls dynamically",
+      "x": 760,
+      "y": 0,
+      "width": 340,
+      "height": 110,
+      "color": "3"
+    },
+    {
+      "id": "5555555555555555",
+      "type": "text",
+      "text": "## Shared Handlers (DRY)\n- `PatientTools` -> `getAvailableDoctors`, `getDoctorSchedule`\n- `AdminTools` -> `getDailyStats`, `getPendingApprovals`",
+      "x": 1160,
+      "y": -80,
+      "width": 360,
+      "height": 130,
+      "color": "6"
+    },
+    {
+      "id": "6666666666666666",
+      "type": "text",
+      "text": "## Dedicated Handlers (`StaffTools.php`)\n- `getClinicQueueOverview` (Clinic-wide queue)\n- `searchPatientByName` (Demographic lookup)\n- `checkInPatient` (Status update)",
+      "x": 1160,
+      "y": 80,
+      "width": 360,
+      "height": 130,
+      "color": "5"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e111111111111111",
+      "fromNode": "1111111111111111",
+      "fromSide": "right",
+      "toNode": "2222222222222222",
+      "toSide": "left",
+      "label": "Loads declarations"
+    },
+    {
+      "id": "e222222222222222",
+      "fromNode": "1111111111111111",
+      "fromSide": "right",
+      "toNode": "3333333333333333",
+      "toSide": "left",
+      "label": "Executes tool call"
+    },
+    {
+      "id": "e333333333333333",
+      "fromNode": "3333333333333333",
+      "fromSide": "right",
+      "toNode": "4444444444444444",
+      "toSide": "left",
+      "label": "Allowed"
+    },
+    {
+      "id": "e444444444444444",
+      "fromNode": "4444444444444444",
+      "fromSide": "right",
+      "toNode": "5555555555555555",
+      "toSide": "left",
+      "label": "Shared tools"
+    },
+    {
+      "id": "e555555555555555",
+      "fromNode": "4444444444444444",
+      "fromSide": "right",
+      "toNode": "6666666666666666",
+      "toSide": "left",
+      "label": "Frontdesk operational tools"
+    }
+  ]
+}

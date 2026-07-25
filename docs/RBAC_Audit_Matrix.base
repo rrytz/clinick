@@ -1,0 +1,19 @@
+filters:
+  and:
+    - 'file.hasTag("rbac")'
+
+properties:
+  file.name:
+    displayName: "Component"
+  status:
+    displayName: "Security Status"
+  role:
+    displayName: "Target Role"
+
+views:
+  - type: table
+    name: "RBAC Compliance Table"
+    order:
+      - file.name
+      - status
+      - role

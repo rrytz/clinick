@@ -1,0 +1,88 @@
+{
+  "nodes": [
+    {
+      "id": "1111111111111111",
+      "type": "text",
+      "text": "## 1. Staff UI Layer (READY)\n- `MediBot • Frontdesk Assistant` title\n- Staff initial chips\n- Role-aware greetings in `greet()`",
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 130,
+      "color": "4"
+    },
+    {
+      "id": "2222222222222222",
+      "type": "text",
+      "text": "## 2. Persona Layer (READY)\n- `StaffSecretary.php` persona class\n- `AssistantFactory` system prompt routing\n- Frontdesk Assistant branding",
+      "x": 380,
+      "y": 0,
+      "width": 320,
+      "height": 130,
+      "color": "4"
+    },
+    {
+      "id": "3333333333333333",
+      "type": "text",
+      "text": "❌ 3. Declarations Gap (DEFECT)\n`ToolRegistry::getDeclarationsForRole('Staff')` returns `AdminTools` declarations, exposing Admin analytics tools Staff cannot run",
+      "x": 760,
+      "y": -80,
+      "width": 360,
+      "height": 140,
+      "color": "1"
+    },
+    {
+      "id": "4444444444444444",
+      "type": "text",
+      "text": "❌ 4. Dispatch Layer Gap (DEFECT)\n`ToolRegistry::executeToolCall` lacks `elseif ($role === 'Staff')` branch.\n100% of Staff tool execution calls fail with 'Tool handler not found'!",
+      "x": 760,
+      "y": 100,
+      "width": 360,
+      "height": 140,
+      "color": "1"
+    },
+    {
+      "id": "5555555555555555",
+      "type": "text",
+      "text": "❌ 5. Fallback Leakage (DEFECT)\nTool failure forces fallback to Patient queue logic ('You currently have no active queue ticket...'), which triggers Patient chips!",
+      "x": 1180,
+      "y": 0,
+      "width": 360,
+      "height": 140,
+      "color": "1"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e111111111111111",
+      "fromNode": "1111111111111111",
+      "fromSide": "right",
+      "toNode": "2222222222222222",
+      "toSide": "left",
+      "label": "Passes role"
+    },
+    {
+      "id": "e222222222222222",
+      "fromNode": "2222222222222222",
+      "fromSide": "right",
+      "toNode": "3333333333333333",
+      "toSide": "left",
+      "label": "Declarations call"
+    },
+    {
+      "id": "e333333333333333",
+      "fromNode": "2222222222222222",
+      "fromSide": "right",
+      "toNode": "4444444444444444",
+      "toSide": "left",
+      "label": "Tool call"
+    },
+    {
+      "id": "e444444444444444",
+      "fromNode": "4444444444444444",
+      "fromSide": "right",
+      "toNode": "5555555555555555",
+      "toSide": "left",
+      "label": "Tool failure forces fallback"
+    }
+  ]
+}

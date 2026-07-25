@@ -1,0 +1,1 @@
+:root{--clinick-primary:#0d9488;--clinick-bg:#f8fafc;--clinick-text:#0f172a}*{box-sizing:border-box}body,html{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--clinick-bg);color:var(--clinick-text)}main{min-height:100vh}

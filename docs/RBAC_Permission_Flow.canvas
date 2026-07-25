@@ -1,0 +1,114 @@
+{
+  "nodes": [
+    {
+      "id": "7a1b2c3d4e5f6a7b",
+      "type": "text",
+      "text": "## User Request (Chat UI / HTTP POST)\nIncoming payload with role & user session",
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 100,
+      "color": "1"
+    },
+    {
+      "id": "1a2b3c4d5e6f7a8b",
+      "type": "text",
+      "text": "## CrisisDetector (Deterministic Early Guard)\nChecks self-harm/crisis keyphrases BEFORE LLM",
+      "x": 400,
+      "y": 0,
+      "width": 320,
+      "height": 100,
+      "color": "2"
+    },
+    {
+      "id": "2b3c4d5e6f7a8b9c",
+      "type": "text",
+      "text": "## SecurityGuard (RBAC Rule Engine)\n`isToolAllowed(toolName, role)` check",
+      "x": 800,
+      "y": 0,
+      "width": 320,
+      "height": 100,
+      "color": "3"
+    },
+    {
+      "id": "3c4d5e6f7a8b9c0d",
+      "type": "text",
+      "text": "## Patient Tools Dispatch\n`PatientTools.php`\n- Scoped by `$userId` session\n- `getMyRecords` / `cancelAppointment`",
+      "x": 1200,
+      "y": -150,
+      "width": 340,
+      "height": 130,
+      "color": "4"
+    },
+    {
+      "id": "4d5e6f7a8b9c0d1e",
+      "type": "text",
+      "text": "## Doctor Tools Dispatch\n`DoctorTools.php`\n- Assignment check required\n- `getConsultationHistory` verified",
+      "x": 1200,
+      "y": 150,
+      "width": 340,
+      "height": 130,
+      "color": "5"
+    },
+    {
+      "id": "5e6f7a8b9c0d1e2f",
+      "type": "text",
+      "text": "## Database Access Layer (`clinick.db`)\nEmpirical SQL parameters with strict ownership filters",
+      "x": 1650,
+      "y": 0,
+      "width": 340,
+      "height": 100,
+      "color": "6"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e111111111111111",
+      "fromNode": "7a1b2c3d4e5f6a7b",
+      "fromSide": "right",
+      "toNode": "1a2b3c4d5e6f7a8b",
+      "toSide": "left",
+      "label": "Sanitized input"
+    },
+    {
+      "id": "e222222222222222",
+      "fromNode": "1a2b3c4d5e6f7a8b",
+      "fromSide": "right",
+      "toNode": "2b3c4d5e6f7a8b9c",
+      "toSide": "left",
+      "label": "Passes safety check"
+    },
+    {
+      "id": "e333333333333333",
+      "fromNode": "2b3c4d5e6f7a8b9c",
+      "fromSide": "right",
+      "toNode": "3c4d5e6f7a8b9c0d",
+      "toSide": "left",
+      "label": "Role: Patient"
+    },
+    {
+      "id": "e444444444444444",
+      "fromNode": "2b3c4d5e6f7a8b9c",
+      "fromSide": "right",
+      "toNode": "4d5e6f7a8b9c0d1e",
+      "toSide": "left",
+      "label": "Role: Doctor"
+    },
+    {
+      "id": "e555555555555555",
+      "fromNode": "3c4d5e6f7a8b9c0d",
+      "fromSide": "right",
+      "toNode": "5e6f7a8b9c0d1e2f",
+      "toSide": "left",
+      "label": "Execute SQL"
+    },
+    {
+      "id": "e666666666666666",
+      "fromNode": "4d5e6f7a8b9c0d1e",
+      "fromSide": "right",
+      "toNode": "5e6f7a8b9c0d1e2f",
+      "toSide": "left",
+      "label": "Execute SQL"
+    }
+  ]
+}

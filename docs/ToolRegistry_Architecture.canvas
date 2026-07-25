@@ -1,0 +1,88 @@
+{
+  "nodes": [
+    {
+      "id": "1111111111111111",
+      "type": "text",
+      "text": "## 1. Gemini Request (Role: Staff)\nGemini receives Tool Declarations for `Staff`",
+      "x": 0,
+      "y": 0,
+      "width": 300,
+      "height": 110,
+      "color": "1"
+    },
+    {
+      "id": "2222222222222222",
+      "type": "text",
+      "text": "❌ DEFECT A: Declarations Mismatch\n`ToolRegistry::getDeclarationsForRole('Staff')` sends `AdminTools` declarations!\nExposes 6 unauthorized Admin tools; omits 4 authorized Staff tools.",
+      "x": 360,
+      "y": -80,
+      "width": 360,
+      "height": 140,
+      "color": "1"
+    },
+    {
+      "id": "3333333333333333",
+      "type": "text",
+      "text": "## 3. SecurityGuard Check\n`isToolAllowed(toolName, 'Staff')`\nVerifies role permissions",
+      "x": 760,
+      "y": 0,
+      "width": 300,
+      "height": 110,
+      "color": "2"
+    },
+    {
+      "id": "4444444444444444",
+      "type": "text",
+      "text": "❌ DEFECT B: Dispatch Execution Gap\n`ToolRegistry::executeToolCall` lacks `elseif ($role === 'Staff')` branch!\n100% of Staff tool execution calls fail with 'Tool handler not found'!",
+      "x": 1100,
+      "y": 0,
+      "width": 380,
+      "height": 150,
+      "color": "1"
+    },
+    {
+      "id": "5555555555555555",
+      "type": "text",
+      "text": "❌ DEFECT C: Fallback Degradation\nTool failure forces fallback to Patient queue logic ('You currently have no active queue ticket...'), which triggers Patient chips!",
+      "x": 1520,
+      "y": 0,
+      "width": 360,
+      "height": 140,
+      "color": "1"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e111111111111111",
+      "fromNode": "1111111111111111",
+      "fromSide": "right",
+      "toNode": "2222222222222222",
+      "toSide": "left",
+      "label": "Loads declarations"
+    },
+    {
+      "id": "e222222222222222",
+      "fromNode": "1111111111111111",
+      "fromSide": "right",
+      "toNode": "3333333333333333",
+      "toSide": "left",
+      "label": "Executes tool call"
+    },
+    {
+      "id": "e333333333333333",
+      "fromNode": "3333333333333333",
+      "fromSide": "right",
+      "toNode": "4444444444444444",
+      "toSide": "left",
+      "label": "Allowed tool passes RBAC"
+    },
+    {
+      "id": "e444444444444444",
+      "fromNode": "4444444444444444",
+      "fromSide": "right",
+      "toNode": "5555555555555555",
+      "toSide": "left",
+      "label": "Tool failure forces fallback"
+    }
+  ]
+}

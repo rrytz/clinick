@@ -1,0 +1,468 @@
+/* CLINICK Login Page — Enterprise SaaS Style */
+/* Inter font, flat #F8FAFC background, no gradient circles, no glassmorphism */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary: #0f766e;
+    --primary-light: #14b8a6;
+    --primary-hover: #115e59;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-white: #ffffff;
+    --border-color: #e2e8f0;
+    --success: #10b981;
+    --error: #ef4444;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.07), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    --transition-fast: 0.12s ease;
+    --transition-smooth: all 0.2s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    /* Flat slate background — no gradient, no decorative circles */
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-main);
+    overflow-x: hidden;
+    padding: 1.5rem;
+}
+
+/* ─── Container & Split Layout ─────────────────────────────── */
+.container {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    width: 960px;
+    max-width: 100%;
+    min-height: 600px;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+}
+
+/* ─── Form Panels ──────────────────────────────────────────── */
+.form-container {
+    width: 50%;
+    padding: 3rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: var(--transition-smooth);
+    opacity: 1;
+    z-index: 2;
+}
+
+.form-container.sign-up-container {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-40px);
+}
+
+.form-container.sign-in-container {
+    height: 100%;
+}
+
+.container.right-panel-active .sign-in-container {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.container.right-panel-active .sign-up-container {
+    transform: translateX(100%);
+    opacity: 1;
+    pointer-events: all;
+    z-index: 5;
+}
+
+/* ─── Overlay Panel ────────────────────────────────────────── */
+.overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: var(--transition-smooth);
+    z-index: 10;
+}
+
+.container.right-panel-active .overlay-container {
+    transform: translateX(-100%);
+}
+
+/* Solid teal — no gradient */
+.overlay {
+    background: var(--primary);
+    color: var(--text-white);
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: var(--transition-smooth);
+}
+
+.container.right-panel-active .overlay {
+    transform: translateX(50%);
+}
+
+.overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 3.5rem;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: var(--transition-smooth);
+}
+
+.overlay-left {
+    transform: translateX(-20%);
+}
+
+.container.right-panel-active .overlay-left {
+    transform: translateX(0);
+}
+
+.overlay-right {
+    right: 0;
+    transform: translateX(0);
+}
+
+.container.right-panel-active .overlay-right {
+    transform: translateX(20%);
+}
+
+/* ─── Brand / Wordmark ─────────────────────────────────────── */
+/* Clean wordmark — no icon, no colored glyph */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-main);
+    text-decoration: none;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+}
+
+/* Small square monogram — not a generic medical icon */
+.brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 5px;
+    flex-shrink: 0;
+    letter-spacing: 0;
+}
+
+/* ─── Typography ───────────────────────────────────────────── */
+h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+}
+
+.overlay h1 {
+    color: var(--text-white);
+    font-size: 1.375rem;
+}
+
+h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+}
+
+p {
+    font-size: 0.825rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+}
+
+.overlay p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+}
+
+/* ─── Forms & Inputs ───────────────────────────────────────── */
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.15rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.form-group i {
+    position: absolute;
+    left: 12px;
+    top: 36px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    pointer-events: none;
+    transition: color 0.15s ease;
+}
+
+.form-control {
+    width: 100%;
+    padding: 9px 12px 9px 34px;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    border-radius: var(--radius-md);
+    outline: none;
+    font-family: inherit;
+    font-size: 0.825rem;
+    color: var(--text-main);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    line-height: 1.5;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+}
+
+.form-control:focus + i,
+.form-group:focus-within i {
+    color: var(--primary);
+}
+
+.form-control[data-invalid],
+.form-control:invalid:not(:placeholder-shown) {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
+}
+
+.form-helper {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: block;
+}
+
+/* Select Override */
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+    padding-right: 2rem;
+}
+
+/* ─── Buttons ──────────────────────────────────────────────── */
+.btn {
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    background-color: var(--primary);
+    color: var(--text-white);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: inherit;
+    /* No hover lift/transform */
+}
+
+.btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    color: white;
+    font-size: 0.8125rem;
+}
+
+.btn-outline:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.9);
+}
+
+/* ─── Alerts ───────────────────────────────────────────────── */
+.alert {
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.25rem;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-left: 3px solid transparent;
+    font-weight: 500;
+}
+
+.alert-danger {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-left-color: var(--error);
+}
+
+.alert-success {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border-left-color: var(--success);
+}
+
+/* ─── Form Footer / Links ──────────────────────────────────── */
+.form-footer {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.form-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.form-link:hover {
+    text-decoration: underline;
+}
+
+/* ─── Mobile Toggle ────────────────────────────────────────── */
+.mobile-toggle {
+    display: none;
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ─── 3-Column Name Row ────────────────────────────────────── */
+.form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.form-control-simple {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    border-radius: var(--radius-md);
+    outline: none;
+    font-family: inherit;
+    font-size: 0.825rem;
+    color: var(--text-main);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-control-simple:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.12);
+}
+
+/* ─── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+        align-items: flex-start;
+        padding-top: 2rem;
+    }
+
+    .container {
+        flex-direction: column;
+        min-height: auto;
+        width: 100%;
+        max-width: 440px;
+    }
+
+    .form-container {
+        width: 100%;
+        padding: 2.5rem 1.75rem;
+    }
+
+    .form-container.sign-up-container {
+        position: relative;
+        transform: none;
+        display: none;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .container.right-panel-active .sign-in-container {
+        display: none;
+    }
+
+    .container.right-panel-active .sign-up-container {
+        display: flex;
+        transform: none;
+    }
+
+    .overlay-container {
+        display: none;
+    }
+
+    .mobile-toggle {
+        display: block;
+    }
+}
