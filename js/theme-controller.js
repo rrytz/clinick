@@ -58,5 +58,12 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         window.ClinickTheme.updateToggleButtons();
+
+        document.querySelectorAll('.theme-toggle-btn, .theme-toggle, #theme-toggle').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.ClinickTheme.toggle();
+            });
+        });
     });
 })();

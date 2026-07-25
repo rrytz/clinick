@@ -660,6 +660,10 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
                     </div>
                 </div>
                 
+                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode" style="margin:0;">
+                    <span class="theme-toggle-thumb"><i class="fa-solid fa-sun"></i></span>
+                </button>
+
                 <a href="index.php?logout=true" class="btn btn-logout btn-secondary btn-sm" title="Sign Out">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
