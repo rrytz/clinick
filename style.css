@@ -466,3 +466,40 @@ select.form-control {
         display: block;
     }
 }
+
+/* ─── Dark Mode (Auth & Base System) ───────────────────────── */
+[data-theme="dark"] {
+    --bg-slate: #0f172a;
+    --bg-subtle: #1e293b;
+    --card-bg: #1e293b;
+    --text-main: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] body {
+    background: var(--bg-slate);
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .container,
+[data-theme="dark"] .form-container,
+[data-theme="dark"] .login-container {
+    background: #1e293b;
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-control-simple {
+    background-color: #0f172a;
+    border-color: var(--border-color);
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-control-simple:focus {
+    border-color: #2dd4bf;
+    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.15);
+}

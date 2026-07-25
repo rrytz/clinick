@@ -1,0 +1,127 @@
+{
+  "nodes": [
+    {
+      "id": "header_n1",
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 140,
+      "type": "text",
+      "text": "## 1. Early Head Script (<head>)\nChecks `localStorage.getItem('clinick-theme')` or `prefers-color-scheme: dark` synchronously."
+    },
+    {
+      "id": "header_n2",
+      "x": 400,
+      "y": 0,
+      "width": 320,
+      "height": 140,
+      "type": "text",
+      "text": "## 2. Document Root Attribute\nSets `data-theme=\"dark\"` on `<html>` root before DOM rendering (Zero FOUC)."
+    },
+    {
+      "id": "header_n3",
+      "x": 800,
+      "y": 0,
+      "width": 320,
+      "height": 140,
+      "type": "text",
+      "text": "## 3. CSS Variable System\nTokens switch in `dashboard.css` & `style.css` (`--bg-slate`, `--card-bg`, `--text-main`, `--border-color`)."
+    },
+    {
+      "id": "component_c1",
+      "x": 0,
+      "y": 240,
+      "width": 260,
+      "height": 120,
+      "type": "text",
+      "text": "### Dashboard Cards & Tables\nDark slate surfaces (`#1e293b`), subtle borders (`#334155`), high-contrast text (`#f1f5f9`)."
+    },
+    {
+      "id": "component_c2",
+      "x": 300,
+      "y": 240,
+      "width": 260,
+      "height": 120,
+      "type": "text",
+      "text": "### Forms & Datepickers\nDark inputs (`#0f172a`), teal focus ring (`rgba(45, 212, 191, 0.15)`), dark option lists."
+    },
+    {
+      "id": "component_c3",
+      "x": 600,
+      "y": 240,
+      "width": 260,
+      "height": 120,
+      "type": "text",
+      "text": "### Calendar & Queue\nDark day tiles, high-contrast green availability indicators (`#047857`), pill highlights."
+    },
+    {
+      "id": "component_c4",
+      "x": 900,
+      "y": 240,
+      "width": 260,
+      "height": 120,
+      "type": "text",
+      "text": "### MediBot Chatbot\nDark chat panel (`#1e293b`), dark bot bubbles (`#0f172a`), dark quick action chips (`#5eead4`)."
+    },
+    {
+      "id": "toggle_t1",
+      "x": 400,
+      "y": 440,
+      "width": 320,
+      "height": 120,
+      "type": "text",
+      "text": "## 4. Header Theme Toggle\nButton toggles `data-theme` attribute, updates `localStorage`, and emits smooth transition."
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "fromNode": "header_n1",
+      "fromSide": "right",
+      "toNode": "header_n2",
+      "toSide": "left"
+    },
+    {
+      "id": "e2",
+      "fromNode": "header_n2",
+      "fromSide": "right",
+      "toNode": "header_n3",
+      "toSide": "left"
+    },
+    {
+      "id": "e3",
+      "fromNode": "header_n3",
+      "fromSide": "bottom",
+      "toNode": "component_c1",
+      "toSide": "top"
+    },
+    {
+      "id": "e4",
+      "fromNode": "header_n3",
+      "fromSide": "bottom",
+      "toNode": "component_c2",
+      "toSide": "top"
+    },
+    {
+      "id": "e5",
+      "fromNode": "header_n3",
+      "fromSide": "bottom",
+      "toNode": "component_c3",
+      "toSide": "top"
+    },
+    {
+      "id": "e6",
+      "fromNode": "header_n3",
+      "fromSide": "bottom",
+      "toNode": "component_c4",
+      "toSide": "top"
+    },
+    {
+      "id": "e7",
+      "fromNode": "component_c2",
+      "fromSide": "bottom",
+      "toNode": "toggle_t1",
+      "toSide": "top"
+    }
+  ]
+}

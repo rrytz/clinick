@@ -245,13 +245,16 @@ $roleTitle = match ($chatbotRole) {
   #medibot-send:disabled { opacity: .45; cursor: not-allowed; }
 
   /* --- Dark mode --- */
-  [data-theme="dark"] #medibot-panel { background: #1e293b; border-color: #334155; }
+  [data-theme="dark"] #medibot-panel { background: #1e293b; border-color: #334155; box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45); }
   [data-theme="dark"] #medibot-messages { background: #0f172a; }
-  [data-theme="dark"] .medibot-msg.bot { background: #1e293b; border-color: #334155; color: #f1f5f9; }
+  [data-theme="dark"] .medibot-msg.bot { background: #1e293b; border-color: #334155; color: #f8fafc; }
+  [data-theme="dark"] .medibot-author { color: #94a3b8; }
+  [data-theme="dark"] .medibot-time { color: #64748b; }
+  [data-theme="dark"] .medibot-avatar.user-avatar { background: #334155; color: #cbd5e1; }
   [data-theme="dark"] #medibot-input-row { background: #1e293b; border-top-color: #334155; }
-  [data-theme="dark"] #medibot-input { background: #0f172a; border-color: #334155; color: #f1f5f9; }
+  [data-theme="dark"] #medibot-input { background: #0f172a; border-color: #334155; color: #f8fafc; }
   [data-theme="dark"] .medibot-chip { background: #1e293b; border-color: #334155; color: #5eead4; }
-  [data-theme="dark"] .medibot-chip:hover { background: #0f2d2b; border-color: #0f766e; }
+  [data-theme="dark"] .medibot-chip:hover { background: #0f2d2b; border-color: #14b8a6; color: #2dd4bf; }
   [data-theme="dark"] .medibot-typing { background: #1e293b; border-color: #334155; }
 </style>
 

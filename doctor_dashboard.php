@@ -276,7 +276,7 @@ if (!function_exists('get_trend_html')) {
       html[data-theme='dark'] #wa-app { --wa-bg:#0f172a; }
     </style>
     <?php endif; ?>
-    <script>if(localStorage.getItem('clinick-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+    <script src="js/theme-controller.js?v=<?php echo filemtime('js/theme-controller.js'); ?>"></script>
 </head>
 <body>
 

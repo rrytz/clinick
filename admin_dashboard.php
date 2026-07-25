@@ -589,7 +589,7 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Custom Style Sheet -->
     <link rel="stylesheet" href="dashboard.css?v=<?php echo filemtime('dashboard.css'); ?>">
-    <script>if(localStorage.getItem('clinick-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+    <script src="js/theme-controller.js?v=<?php echo filemtime('js/theme-controller.js'); ?>"></script>
 </head>
 <body>
 
