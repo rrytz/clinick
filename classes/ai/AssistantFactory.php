@@ -280,7 +280,21 @@ class AssistantFactory
             }
         } elseif ($role === 'Staff') {
             $assistantName = 'Frontdesk Assistant';
-            if (str_contains($lower, 'queue')) {
+            if (str_contains($lower, 'function') || str_contains($lower, 'capability') || str_contains($lower, 'capabilities') || str_contains($lower, 'what can you do') || str_contains($lower, 'who are you') || str_contains($lower, 'features') || str_contains($lower, 'help')) {
+                $docs = $this->tools->executeToolCall('getAvailableDoctors', [], $userId, $role, $convId);
+                $q = $this->tools->executeToolCall('getClinicQueueOverview', [], $userId, $role, $convId);
+                $executedTools = ['getAvailableDoctors', 'getClinicQueueOverview'];
+                $availCount = $docs['count'] ?? 0;
+                $totalQueue = $q['total_in_queue'] ?? 0;
+
+                $reply = "👋 **Frontdesk Assistant Capabilities**\n\nI am your dedicated operational assistant for clinic frontdesk workflows. Here is everything I can do for you:\n\n" .
+                         "1. 📋 **Live Queue Overview**: Check live patient counts across all doctors (currently **{$totalQueue}** patient(s) in queue).\n" .
+                         "2. 🚶 **Walk-in Registration Guide**: Guide you through registering walk-in/phone appointments (**{$availCount} doctor(s) available today**).\n" .
+                         "3. ✅ **Patient Check-in Support**: Step-by-step guidance on checking in scheduled patients.\n" .
+                         "4. 🔍 **Patient Demographics Lookup**: Search patient records by name or email.\n" .
+                         "5. 🩺 **Doctor Availability**: Check on-duty schedules and consultation slots.\n\n" .
+                         "How can I assist you with frontdesk operations right now?";
+            } elseif (str_contains($lower, 'queue')) {
                 $q = $this->tools->executeToolCall('getClinicQueueOverview', [], $userId, $role, $convId);
                 $executedTools = ['getClinicQueueOverview'];
                 $total = $q['total_in_queue'] ?? 0;
