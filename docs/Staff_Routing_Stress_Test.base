@@ -1,0 +1,16 @@
+name: Staff AI Routing & Safety Stress Test Matrix
+filters:
+  and:
+    - field: test_status
+      operator: equals
+      value: pass
+views:
+  - name: All Stress Tests
+    type: table
+    fields:
+      - test_id
+      - category
+      - test_scenario
+      - query_input
+      - expected_behavior
+      - test_status

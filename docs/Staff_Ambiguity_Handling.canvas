@@ -1,0 +1,102 @@
+{
+  "nodes": [
+    {
+      "id": "node_input",
+      "x": 0,
+      "y": 0,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 1. Natural Language Input\nE.g. \"Patient Rivera arrived\" or \"Find Maria\""
+    },
+    {
+      "id": "node_guard",
+      "x": 380,
+      "y": 0,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 2. Anti-Enumeration Guard\nLength >= 2 chars? Bulk phrase check ('all patients')? Escaped wildcards?"
+    },
+    {
+      "id": "node_eval",
+      "x": 760,
+      "y": 0,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 3. Match Count Evaluation\nQueries scheduled appointments for today matching patient name."
+    },
+    {
+      "id": "node_single",
+      "x": 580,
+      "y": 200,
+      "width": 260,
+      "height": 120,
+      "type": "text",
+      "text": "### Single Match (1 Appointment)\nUpdates appointment status to `In Progress`."
+    },
+    {
+      "id": "node_multi",
+      "x": 900,
+      "y": 200,
+      "width": 260,
+      "height": 120,
+      "type": "text",
+      "text": "### Multiple Matches (2+ Appointments)\nReturns `ambiguous => true` & prompts staff for explicit Appointment ID."
+    },
+    {
+      "id": "node_log",
+      "x": 760,
+      "y": 400,
+      "width": 300,
+      "height": 120,
+      "type": "text",
+      "text": "## 4. Comprehensive Audit Log\nLogs success, failure, and denied actions into `audit_logs`."
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "fromNode": "node_input",
+      "fromSide": "right",
+      "toNode": "node_guard",
+      "toSide": "left"
+    },
+    {
+      "id": "e2",
+      "fromNode": "node_guard",
+      "fromSide": "right",
+      "toNode": "node_eval",
+      "toSide": "left"
+    },
+    {
+      "id": "e3",
+      "fromNode": "node_eval",
+      "fromSide": "bottom",
+      "toNode": "node_single",
+      "toSide": "top"
+    },
+    {
+      "id": "e4",
+      "fromNode": "node_eval",
+      "fromSide": "bottom",
+      "toNode": "node_multi",
+      "toSide": "top"
+    },
+    {
+      "id": "e5",
+      "fromNode": "node_single",
+      "fromSide": "bottom",
+      "toNode": "node_log",
+      "toSide": "top"
+    },
+    {
+      "id": "e6",
+      "fromNode": "node_multi",
+      "fromSide": "bottom",
+      "toNode": "node_log",
+      "toSide": "top"
+    }
+  ]
+}

@@ -149,18 +149,30 @@ class StaffTools
     public function searchPatientByName(array $args, int $userId): array
     {
         $query = trim($args['query'] ?? '');
-        if (empty($query)) {
-            return ['error' => 'Search query parameter required.'];
+
+        // 1. Minimum search query length constraint (anti-enumeration)
+        if (strlen($query) < 2) {
+            return ['error' => 'Patient search query must be at least 2 characters to prevent broad database enumeration.'];
         }
+
+        // 2. Safeguard against bulk enumeration requests
+        $lower = strtolower($query);
+        $bulkPhrases = ['all', 'every', 'show all', 'list all', 'all patients', 'every patient', 'show me all patients', 'list every patient', '%', '*'];
+        if (in_array($lower, $bulkPhrases, true)) {
+            return ['error' => 'Bulk patient enumeration is disabled for security and PHI protection. Please search by specific patient name or email.'];
+        }
+
+        // 3. Escape wildcard characters to prevent SQL pattern exploitation
+        $safeQuery = str_replace(['%', '_'], ['\%', '\_'], $query);
 
         $stmt = $this->db->prepare("
             SELECT id, name, email, created_at
             FROM users
-            WHERE role = 'Patient' AND (name LIKE :q OR email LIKE :q)
+            WHERE role = 'Patient' AND (name LIKE :q ESCAPE '\' OR email LIKE :q ESCAPE '\')
             ORDER BY name ASC
             LIMIT 10
         ");
-        $stmt->bindValue(':q', '%' . $query . '%', SQLITE3_TEXT);
+        $stmt->bindValue(':q', '%' . $safeQuery . '%', SQLITE3_TEXT);
         $res = $stmt->execute();
 
         $patients = [];
@@ -178,8 +190,44 @@ class StaffTools
     public function checkInPatient(array $args, int $userId): array
     {
         $appId = (int)($args['appointment_id'] ?? 0);
+        $nameQuery = trim($args['patient_name'] ?? $args['query'] ?? '');
+
+        // Ambiguity resolution: if no ID provided, search scheduled appointments for today by name
+        if (!$appId && !empty($nameQuery)) {
+            $today = date('Y-m-d');
+            $stmtFind = $this->db->prepare("
+                SELECT a.id, a.time_slot, u.name as patient_name
+                FROM appointments a
+                JOIN users u ON a.patient_id = u.id
+                WHERE a.appointment_date = :date
+                  AND (u.name LIKE :q OR u.email LIKE :q)
+                  AND a.status IN ('Scheduled', 'Approved')
+            ");
+            $stmtFind->bindValue(':date', $today, SQLITE3_TEXT);
+            $stmtFind->bindValue(':q', '%' . $nameQuery . '%', SQLITE3_TEXT);
+            $resFind = $stmtFind->execute();
+
+            $matches = [];
+            while ($row = $resFind->fetchArray(SQLITE3_ASSOC)) {
+                $matches[] = $row;
+            }
+
+            if (count($matches) === 0) {
+                return ['error' => "No scheduled appointment found for today matching '{$nameQuery}'."];
+            } elseif (count($matches) === 1) {
+                $appId = (int)$matches[0]['id'];
+            } else {
+                return [
+                    'ambiguous'    => true,
+                    'match_count'  => count($matches),
+                    'matches'      => $matches,
+                    'message'      => "Multiple appointments found for '{$nameQuery}' today. Please specify the exact Appointment ID.",
+                ];
+            }
+        }
+
         if (!$appId) {
-            return ['error' => 'Appointment ID required for check-in.'];
+            return ['error' => 'Appointment ID or Patient Name required for check-in.'];
         }
 
         $stmtCheck = $this->db->prepare("
