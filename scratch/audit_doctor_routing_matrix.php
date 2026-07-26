@@ -17,6 +17,7 @@ $testQueries = [
     "Assigned patients",
     "Patients today",
     "Complete consultation",
+    "Consultation workflow",
     "Show patient records",
     "Prescription guide",
     "Work availability"

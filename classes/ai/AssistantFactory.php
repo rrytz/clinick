@@ -318,6 +318,19 @@ class AssistantFactory
                 } else {
                     $reply = "📋 **Assigned Patient Search**\n\nNo assigned patient records found matching **'{$cleanSearch}'**. You can inspect all registered patients under the **'Patients'** tab.";
                 }
+            } elseif (str_contains($lower, 'workflow') || str_contains($lower, 'guide') || str_contains($lower, 'how to conduct') || str_contains($lower, 'process')) {
+                $next = $this->tools->executeToolCall('getNextPatient', [], $userId, $role, $convId);
+                $executedTools = ['getNextPatient'];
+                $nextStr = (!empty($next['has_next']) && !empty($next['next_patient']))
+                    ? "Current next patient: **" . $next['next_patient']['patient_name'] . "** (Q-" . ($next['next_patient']['queue_number'] ?? '1') . ")"
+                    : "No patients currently waiting in active queue.";
+
+                $reply = "🩺 **CLINICK Clinical Consultation Workflow**\n\nHere is the standard 4-step doctor consultation process:\n\n" .
+                         "1. 📋 **Queue Check**: Review your queue in the Overview table or ask me for your next patient ({$nextStr}).\n" .
+                         "2. 🔍 **Record Review**: Inspect patient medical history and past prescription logs under **'Patients'**.\n" .
+                         "3. 🩺 **Clinical Assessment**: Conduct the patient examination and record findings.\n" .
+                         "4. 💊 **Prescribe & Complete**: Issue prescriptions under **'Prescription'**, then click **'Complete'** on the appointment schedule.\n\n" .
+                         "How else can I assist your consultation workflow today?";
             } elseif (str_contains($lower, 'appointment') || str_contains($lower, 'appointments') || str_contains($lower, 'today') || str_contains($lower, 'schedule') || str_contains($lower, 'assigned') || str_contains($lower, 'complete') || str_contains($lower, 'consultation')) {
                 $assigned = $this->tools->executeToolCall('getAssignedPatients', [], $userId, $role, $convId);
                 $executedTools = ['getAssignedPatients'];
