@@ -1076,23 +1076,23 @@ if (!function_exists('get_trend_html')) {
                                     <i class="fa-solid fa-clock" style="color: var(--primary);"></i> Today's Schedule Overview
                                 </h3>
                                 
-                                <div style="background: rgba(241, 245, 249, 0.5); padding: 0.75rem; border-radius: 0.75rem; border: 1px solid var(--border-color); margin-bottom: 0.75rem;">
+                                <div class="wa-date-status-box">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                                        <span class="wa-text-muted" style="font-size: 0.8rem;">Date</span>
-                                        <span class="wa-text-main" style="font-size: 0.8rem; font-weight: 600;"><?php echo date('l, M j'); ?></span>
+                                        <span class="wa-text-muted" style="font-size: 0.8rem; font-weight: 600;">Date</span>
+                                        <span class="wa-text-main" style="font-size: 0.8rem; font-weight: 700;"><?php echo date('l, M j'); ?></span>
                                     </div>
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                                        <span class="wa-text-muted" style="font-size: 0.8rem;">Shifts Status</span>
+                                        <span class="wa-text-muted" style="font-size: 0.8rem; font-weight: 600;">Shifts Status</span>
                                         <?php if ($today_av): ?>
-                                            <span style="padding: 2px 6px; font-size: 0.7rem; font-weight: 600; border-radius: 4px;" class="<?php echo $today_av['status'] === 'Available' ? 'wa-pill-avail' : 'wa-pill-unavail'; ?>">
+                                            <span style="padding: 3px 8px; font-size: 0.7rem; font-weight: 700; border-radius: 6px;" class="<?php echo $today_av['status'] === 'Available' ? 'wa-pill-avail' : 'wa-pill-unavail'; ?>">
                                                 <?php echo $today_av['status']; ?>
                                             </span>
                                         <?php else: ?>
-                                            <span style="padding: 2px 6px; font-size: 0.7rem; font-weight: 600; border-radius: 4px; background: #e2e8f0; color: #475569;">Not Set</span>
+                                            <span class="wa-text-muted" style="padding: 3px 8px; font-size: 0.7rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--border-color);">Not Set</span>
                                         <?php endif; ?>
                                     </div>
                                     <?php if ($today_av && $today_av['notes']): ?>
-                                        <div class="wa-text-muted" style="font-size: 0.75rem; border-top: 1px solid var(--border-color); pt-2 mt-2">
+                                        <div class="wa-text-muted" style="font-size: 0.75rem; border-top: 1px solid var(--border-color); padding-top: 0.5rem; margin-top: 0.5rem;">
                                             <strong>Hours:</strong> <?php echo htmlspecialchars($today_av['notes']); ?>
                                         </div>
                                     <?php endif; ?>
@@ -1110,18 +1110,21 @@ if (!function_exists('get_trend_html')) {
                                     <i class="fa-solid fa-list-check" style="color: #6366f1;"></i> Upcoming Patient Visits
                                 </h3>
                                 
-                                <div class="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 240px; overflow-y: auto;">
                                     <?php if (empty($upcoming)): ?>
-                                        <p class="text-xs text-slate-400 dark:text-slate-500 text-center py-4">No upcoming bookings scheduled.</p>
+                                        <div style="text-align: center; padding: 1.5rem 0.5rem;" class="wa-text-muted">
+                                            <i class="fa-solid fa-calendar-xmark" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block; opacity: 0.5;"></i>
+                                            <span style="font-size: 0.8rem;">No upcoming bookings scheduled.</span>
+                                        </div>
                                     <?php else: 
                                         foreach ($upcoming as $up):
                                     ?>
-                                        <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-850">
-                                            <div class="min-w-0">
-                                                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate block"><?php echo htmlspecialchars($up['patient_name']); ?></span>
-                                                <span class="text-xxs text-slate-400 block"><?php echo date('M d', strtotime($up['appointment_date'])) . ' at ' . htmlspecialchars($up['time_slot']); ?></span>
+                                        <div class="wa-date-status-box" style="margin-bottom: 0; padding: 0.65rem 0.85rem; display: flex; align-items: center; justify-content: space-between;">
+                                            <div style="min-width: 0;">
+                                                <span class="wa-text-main" style="font-size: 0.825rem; font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo htmlspecialchars($up['patient_name']); ?></span>
+                                                <span class="wa-text-muted" style="font-size: 0.7rem; display: block;"><?php echo date('M d', strtotime($up['appointment_date'])) . ' at ' . htmlspecialchars($up['time_slot']); ?></span>
                                             </div>
-                                            <span class="px-2 py-0.5 text-xxs rounded-full <?php echo $up['status'] === 'Confirmed' ? 'bg-teal-50 text-teal-700' : 'bg-indigo-50 text-indigo-700'; ?>">
+                                            <span class="wa-pill-avail" style="padding: 2px 6px; font-size: 0.7rem; font-weight: 700; border-radius: 9999px;">
                                                 <?php echo $up['status']; ?>
                                             </span>
                                         </div>
@@ -1133,24 +1136,21 @@ if (!function_exists('get_trend_html')) {
                             </div>
 
                             <!-- Panel 3: Quick Actions -->
-                            <div class="wa-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-4">
-                                <h3 class="text-sm font-semibold text-slate-850 dark:text-white mb-3 flex items-center gap-2">
-                                    <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> Quick Actions
+                            <div class="wa-card p-4">
+                                <h3 style="font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;" class="wa-text-main">
+                                    <i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> Quick Actions
                                 </h3>
                                 
-                                <div class="flex flex-col gap-2">
-                                    <button onclick="openAvailabilityForDate('<?php echo $today_date; ?>', 'Available')"
-                                            class="w-full text-left inline-flex items-center justify-between px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-800 transition">
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <button onclick="openAvailabilityForDate('<?php echo $today_date; ?>', 'Available')" class="wa-action-btn">
                                         <span>Set Today Available</span>
-                                        <i class="fa-solid fa-circle-check text-teal-500"></i>
+                                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
                                     </button>
-                                    <button onclick="openAvailabilityForDate('<?php echo $today_date; ?>', 'Unavailable')"
-                                            class="w-full text-left inline-flex items-center justify-between px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-800 transition">
+                                    <button onclick="openAvailabilityForDate('<?php echo $today_date; ?>', 'Unavailable')" class="wa-action-btn">
                                         <span>Mark Today Off (Unavailable)</span>
-                                        <i class="fa-solid fa-circle-xmark text-rose-500"></i>
+                                        <i class="fa-solid fa-circle-xmark" style="color: #ef4444;"></i>
                                     </button>
-                                    <a href="?tab=appointments"
-                                       class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition shadow-sm">
+                                    <a href="?tab=appointments" class="wa-action-btn btn-primary-pill">
                                         <i class="fa-solid fa-calendar-check"></i> Go to Patient Schedule
                                     </a>
                                 </div>

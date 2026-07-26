@@ -3363,3 +3363,73 @@ h6 {
     background: var(--primary) !important;
     color: #ffffff !important;
 }
+
+/* ─── Work Availability Quick Action Pill Buttons & Status Box ─── */
+.wa-date-status-box {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 0.85rem;
+    padding: 0.85rem;
+    margin-bottom: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .wa-date-status-box {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+.wa-action-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1rem;
+    font-size: 0.825rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
+    background: #ffffff;
+    color: var(--text-main);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-bottom: 0.5rem;
+}
+
+.wa-action-btn:hover {
+    background: #f1f5f9;
+    border-color: var(--primary);
+}
+
+[data-theme="dark"] .wa-action-btn {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .wa-action-btn:hover {
+    background: #1e293b !important;
+    border-color: var(--primary-light) !important;
+}
+
+.wa-action-btn.btn-primary-pill {
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.wa-action-btn.btn-primary-pill:hover {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .wa-action-btn.btn-primary-pill {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .wa-action-btn.btn-primary-pill:hover {
+    background: var(--primary-hover) !important;
+}
