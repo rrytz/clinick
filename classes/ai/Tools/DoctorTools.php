@@ -201,18 +201,40 @@ class DoctorTools
     public function searchAssignedPatientRecords(array $args, int $userId): array
     {
         $query = trim($args['query'] ?? '');
-        $words = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
+        // 3. Clean punctuation noise, strip stop words, and tokenize multi-word queries for flexible matching
+        $stopWords = ['is', 'there', 'are', 'was', 'were', 'who', 'someone', 'named', 'find', 'search', 'lookup', 'patient', 'patients', 'the', 'a', 'an', 'for', 'of', 'in', 'on', 'at', 'check', 'show', 'list', 'me', 'please', 'any'];
+
+        $cleanedQuery = trim(preg_replace('/[^\p{L}\p{N}\s@.-]/u', '', $query));
+        if (empty($cleanedQuery)) {
+            $cleanedQuery = $query;
+        }
+
+        $words = preg_split('/\s+/', $cleanedQuery, -1, PREG_SPLIT_NO_EMPTY);
         if (empty($words)) {
             return ['error' => 'Patient search query cannot be empty.'];
         }
 
         $whereClauses = [];
         $params = [':did' => $userId];
+        $validWordCount = 0;
+
         foreach ($words as $idx => $word) {
-            $safeWord = str_replace(['%', '_'], ['\%', '\_'], $word);
+            $cleanWord = trim(preg_replace('/[^\p{L}\p{N}@.-]/u', '', $word), '.-');
+            $lowerWord = strtolower($cleanWord);
+
+            if (strlen($cleanWord) < 2 || in_array($lowerWord, $stopWords, true)) {
+                continue;
+            }
+
+            $safeWord = str_replace(['%', '_'], ['\%', '\_'], $cleanWord);
             $paramName = ":q{$idx}";
             $whereClauses[] = "(u.name LIKE {$paramName} ESCAPE '\\' OR u.email LIKE {$paramName} ESCAPE '\\')";
             $params[$paramName] = '%' . $safeWord . '%';
+            $validWordCount++;
+        }
+
+        if ($validWordCount === 0) {
+            return ['error' => 'Patient search query must contain at least 2 characters of valid search text.'];
         }
 
         $whereSql = implode(' AND ', $whereClauses);

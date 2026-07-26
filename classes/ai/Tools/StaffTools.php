@@ -162,19 +162,40 @@ class StaffTools
             return ['error' => 'Bulk patient enumeration is disabled for security and PHI protection. Please search by specific patient name or email.'];
         }
 
-        // 3. Tokenize multi-word queries for flexible word-order matching (e.g. "christian rivera" -> "rivera christian")
-        $words = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
+        // 3. Clean punctuation noise, strip stop words, and tokenize multi-word queries for flexible matching
+        $stopWords = ['is', 'there', 'are', 'was', 'were', 'who', 'someone', 'named', 'find', 'search', 'lookup', 'patient', 'patients', 'the', 'a', 'an', 'for', 'of', 'in', 'on', 'at', 'check', 'show', 'list', 'me', 'please', 'any'];
+
+        $cleanedQuery = trim(preg_replace('/[^\p{L}\p{N}\s@.-]/u', '', $query));
+        if (empty($cleanedQuery)) {
+            $cleanedQuery = $query;
+        }
+
+        $words = preg_split('/\s+/', $cleanedQuery, -1, PREG_SPLIT_NO_EMPTY);
         if (empty($words)) {
             return ['error' => 'Patient search query cannot be empty.'];
         }
 
         $whereClauses = [];
         $params = [];
+        $validWordCount = 0;
+
         foreach ($words as $idx => $word) {
-            $safeWord = str_replace(['%', '_'], ['\%', '\_'], $word);
+            $cleanWord = trim(preg_replace('/[^\p{L}\p{N}@.-]/u', '', $word), '.-');
+            $lowerWord = strtolower($cleanWord);
+
+            if (strlen($cleanWord) < 2 || in_array($lowerWord, $stopWords, true)) {
+                continue;
+            }
+
+            $safeWord = str_replace(['%', '_'], ['\%', '\_'], $cleanWord);
             $paramName = ":q{$idx}";
             $whereClauses[] = "(name LIKE {$paramName} ESCAPE '\\' OR email LIKE {$paramName} ESCAPE '\\')";
             $params[$paramName] = '%' . $safeWord . '%';
+            $validWordCount++;
+        }
+
+        if ($validWordCount === 0) {
+            return ['error' => 'Patient search query must contain at least 2 characters of valid search text.'];
         }
 
         $whereSql = implode(' AND ', $whereClauses);
