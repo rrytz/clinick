@@ -270,13 +270,73 @@ class AssistantFactory
             }
         } elseif ($role === 'Doctor') {
             $assistantName = 'Clinical Workflow Assistant';
-            if (str_contains($lower, 'patient') || str_contains($lower, 'today') || str_contains($lower, 'schedule')) {
+            if (str_contains($lower, 'prescription') || str_contains($lower, 'prescribe') || str_contains($lower, 'rx') || str_contains($lower, 'medication') || str_contains($lower, 'meds')) {
+                $rx = $this->tools->executeToolCall('getPrescriptionLog', [], $userId, $role, $convId);
+                $executedTools = ['getPrescriptionLog'];
+                $logCount = $rx['log_count'] ?? 0;
+                $lines = [];
+                foreach ($rx['logs'] ?? [] as $item) {
+                    $lines[] = "• **{$item['medication']}** ({$item['dosage']}) - Patient: **{$item['patient_name']}** (" . date('M j', strtotime($item['created_at'])) . ")";
+                }
+                $logStr = !empty($lines) ? implode("\n", $lines) : "No prescriptions logged recently.";
+
+                $reply = "💊 **Prescription Log & Writing Guide**\n\nYou have **{$logCount}** recent prescription entry(ies):\n\n{$logStr}\n\nTo prescribe new medication, click the **'Prescription'** tab on your dashboard toolbar.";
+            } elseif (str_contains($lower, 'availability') || str_contains($lower, 'avail') || str_contains($lower, 'shift') || str_contains($lower, 'off') || str_contains($lower, 'duty') || str_contains($lower, 'calendar')) {
+                $avail = $this->tools->executeToolCall('getDoctorAvailability', [], $userId, $role, $convId);
+                $executedTools = ['getDoctorAvailability'];
+                $aDays = $avail['available_days'] ?? 0;
+                $uDays = $avail['unavailable_days'] ?? 0;
+
+                $reply = "📅 **Work Availability & Shifts**\n\nYour schedule overview for " . date('F Y') . ":\n" .
+                         "• Available Days: **{$aDays}**\n" .
+                         "• Days Off / Unavailable: **{$uDays}**\n\n" .
+                         "To update your clinical shifts, click the **'Availability'** tab on your dashboard.";
+            } elseif (str_contains($lower, 'next') || str_contains($lower, 'who is next')) {
+                $next = $this->tools->executeToolCall('getNextPatient', [], $userId, $role, $convId);
+                $executedTools = ['getNextPatient'];
+                if (!empty($next['has_next']) && !empty($next['next_patient'])) {
+                    $np = $next['next_patient'];
+                    $reply = "🩺 **Next Patient in Queue**\n\n• **Patient Name**: " . $np['patient_name'] . "\n• **Queue Ticket**: Q-" . ($np['queue_number'] ?? '1') . "\n• **Time Slot**: " . $np['time_slot'] . "\n• **Reason**: " . ($np['reason'] ?: 'Follow-up / Consultation') . "\n• **Status**: " . $np['status'];
+                } else {
+                    $reply = "🩺 **Next Patient Queue**\n\nThere are currently no remaining patients waiting in your queue for today.";
+                }
+            } elseif (str_contains($lower, 'record') || str_contains($lower, 'records') || str_contains($lower, 'history') || str_contains($lower, 'chart') || str_contains($lower, 'search') || str_contains($lower, 'lookup') || str_contains($lower, 'find')) {
+                $cleanSearch = trim(preg_replace('/^(show|view|find|search|lookup|patient|records|history|chart|for)+/i', '', $message));
+                if (empty($cleanSearch)) { $cleanSearch = $message; }
+
+                $rec = $this->tools->executeToolCall('searchAssignedPatientRecords', ['query' => $cleanSearch], $userId, $role, $convId);
+                $executedTools = ['searchAssignedPatientRecords'];
+                $matchCount = $rec['match_count'] ?? 0;
+
+                if ($matchCount > 0) {
+                    $lines = [];
+                    foreach ($rec['patients'] ?? [] as $p) {
+                        $lines[] = "• **{$p['name']}** (ID #{$p['id']}) | Email: {$p['email']}";
+                    }
+                    $pList = implode("\n", $lines);
+                    $reply = "📋 **Assigned Patient Records for '{$cleanSearch}'**\n\nFound **{$matchCount}** matching patient record(s):\n\n{$pList}\n\nWould you like me to pull detailed consultation notes or prescription history for a specific patient ID?";
+                } else {
+                    $reply = "📋 **Assigned Patient Search**\n\nNo assigned patient records found matching **'{$cleanSearch}'**. You can inspect all registered patients under the **'Patients'** tab.";
+                }
+            } elseif (str_contains($lower, 'appointment') || str_contains($lower, 'appointments') || str_contains($lower, 'today') || str_contains($lower, 'schedule') || str_contains($lower, 'assigned') || str_contains($lower, 'complete') || str_contains($lower, 'consultation')) {
                 $assigned = $this->tools->executeToolCall('getAssignedPatients', [], $userId, $role, $convId);
                 $executedTools = ['getAssignedPatients'];
                 $count = $assigned['patient_count'] ?? 0;
-                $reply = "You have $count patient consultations scheduled for today. Would you like me to pull up a specific patient's medical records or consultation history?";
+                $lines = [];
+                foreach ($assigned['assigned_list'] ?? [] as $p) {
+                    $lines[] = "• **" . $p['time_slot'] . "** — **" . $p['patient_name'] . "** (Q-" . ($p['queue_number'] ?? '-') . ") | " . ($p['reason'] ?: 'General Consultation') . " [" . strtoupper($p['status']) . "]";
+                }
+                $listStr = !empty($lines) ? implode("\n", $lines) : "No consultations scheduled for today.";
+
+                $reply = "📋 **Today's Patient Schedule ({$count} Consultations)**\n\n{$listStr}\n\nNeed details on a specific patient or consultation history?";
             } else {
-                $reply = "Hello Doctor! I am your Clinical Workflow Assistant. I am ready to help manage your consultation schedule, review assigned patient files, or check upcoming appointments.";
+                $reply = "👋 **Clinical Workflow Assistant**\n\nI am ready to assist you, Doctor! Here is what I can do:\n\n" .
+                         "1. 📅 **Today's Consultation Schedule**: View your queue and patient appointment list.\n" .
+                         "2. 🩺 **Next Patient Lookup**: Check who is next in your consultation queue.\n" .
+                         "3. 💊 **Prescription Log**: Review recent prescriptions issued.\n" .
+                         "4. 📋 **Patient File Lookup**: Search clinical records for assigned patients.\n" .
+                         "5. 🗓️ **Work Availability**: Check your active shift schedules.\n\n" .
+                         "How can I assist your clinical workflow today?";
             }
         } elseif ($role === 'Staff') {
             $assistantName = 'Frontdesk Assistant';

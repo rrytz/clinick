@@ -44,6 +44,44 @@ class DoctorTools
                     'properties' => (object)[],
                 ],
             ],
+            [
+                'name'        => 'searchAssignedPatientRecords',
+                'description' => 'Searches assigned patients by name or email to view their clinical records and appointment history.',
+                'parameters'  => [
+                    'type'       => 'OBJECT',
+                    'properties' => [
+                        'query' => ['type' => 'STRING', 'description' => 'Patient name or email search query.'],
+                    ],
+                    'required'   => ['query'],
+                ],
+            ],
+            [
+                'name'        => 'getDoctorAvailability',
+                'description' => 'Retrieves active work availability shifts and scheduled days off for the doctor.',
+                'parameters'  => [
+                    'type'       => 'OBJECT',
+                    'properties' => [
+                        'month' => ['type' => 'INTEGER', 'description' => 'Month (1-12). Defaults to current month.'],
+                        'year'  => ['type' => 'INTEGER', 'description' => 'Year (YYYY). Defaults to current year.'],
+                    ],
+                ],
+            ],
+            [
+                'name'        => 'getPrescriptionLog',
+                'description' => 'Retrieves recent prescription logs issued by the doctor.',
+                'parameters'  => [
+                    'type'       => 'OBJECT',
+                    'properties' => (object)[],
+                ],
+            ],
+            [
+                'name'        => 'getNextPatient',
+                'description' => 'Returns details of the immediate next patient waiting in the doctor consultation queue today.',
+                'parameters'  => [
+                    'type'       => 'OBJECT',
+                    'properties' => (object)[],
+                ],
+            ],
         ];
     }
 
@@ -157,6 +195,122 @@ class DoctorTools
         return [
             'doctor_id' => $userId,
             'upcoming'  => $upcoming,
+        ];
+    }
+
+    public function searchAssignedPatientRecords(array $args, int $userId): array
+    {
+        $query = trim($args['query'] ?? '');
+        $stmt = $this->db->prepare("
+            SELECT DISTINCT u.id, u.name, u.email, u.created_at
+            FROM users u
+            JOIN appointments a ON u.id = a.patient_id
+            WHERE a.doctor_id = :did AND u.role = 'Patient'
+              AND (u.name LIKE :q OR u.email LIKE :q)
+            ORDER BY u.name ASC
+            LIMIT 10
+        ");
+        $stmt->bindValue(':did', $userId, SQLITE3_INTEGER);
+        $stmt->bindValue(':q', "%{$query}%", SQLITE3_TEXT);
+        $res = $stmt->execute();
+
+        $matches = [];
+        while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
+            $matches[] = $row;
+        }
+
+        return [
+            'query'        => $query,
+            'doctor_id'    => $userId,
+            'match_count'  => count($matches),
+            'patients'     => $matches,
+        ];
+    }
+
+    public function getDoctorAvailability(array $args, int $userId): array
+    {
+        $month = (int)($args['month'] ?? date('n'));
+        $year  = (int)($args['year'] ?? date('Y'));
+
+        $startDate = sprintf('%04d-%02d-01', $year, $month);
+        $daysInMonth = (int)date('t', strtotime($startDate));
+        $endDate = sprintf('%04d-%02d-%02d', $year, $month, $daysInMonth);
+
+        $stmt = $this->db->prepare("
+            SELECT available_date, status, notes
+            FROM availability
+            WHERE doctor_id = :did AND available_date BETWEEN :start_date AND :end_date
+            ORDER BY available_date ASC
+        ");
+        $stmt->bindValue(':did', $userId, SQLITE3_INTEGER);
+        $stmt->bindValue(':start_date', $startDate, SQLITE3_TEXT);
+        $stmt->bindValue(':end_date', $endDate, SQLITE3_TEXT);
+        $res = $stmt->execute();
+
+        $slots = [];
+        $availDays = 0;
+        $unavailDays = 0;
+        while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
+            $slots[] = $row;
+            if ($row['status'] === 'Available') { $availDays++; }
+            else { $unavailDays++; }
+        }
+
+        return [
+            'doctor_id'        => $userId,
+            'month'            => $month,
+            'year'             => $year,
+            'available_days'   => $availDays,
+            'unavailable_days' => $unavailDays,
+            'slots'            => $slots,
+        ];
+    }
+
+    public function getPrescriptionLog(array $args, int $userId): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT p.id, p.medication, p.dosage, p.frequency, p.created_at, u.name as patient_name
+            FROM prescriptions p
+            JOIN users u ON p.patient_id = u.id
+            WHERE p.doctor_id = :did
+            ORDER BY p.created_at DESC
+            LIMIT 10
+        ");
+        $stmt->bindValue(':did', $userId, SQLITE3_INTEGER);
+        $res = $stmt->execute();
+
+        $logs = [];
+        while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
+            $logs[] = $row;
+        }
+
+        return [
+            'doctor_id' => $userId,
+            'log_count' => count($logs),
+            'logs'      => $logs,
+        ];
+    }
+
+    public function getNextPatient(array $args, int $userId): array
+    {
+        $today = date('Y-m-d');
+        $stmt = $this->db->prepare("
+            SELECT a.id, a.patient_id, u.name as patient_name, u.email, a.appointment_date, a.time_slot, a.reason, a.status, a.queue_number
+            FROM appointments a
+            JOIN users u ON a.patient_id = u.id
+            WHERE a.doctor_id = :did AND a.appointment_date = :today AND a.status IN ('Scheduled', 'In Progress')
+            ORDER BY a.queue_number ASC, a.time_slot ASC
+            LIMIT 1
+        ");
+        $stmt->bindValue(':did', $userId, SQLITE3_INTEGER);
+        $stmt->bindValue(':today', $today, SQLITE3_TEXT);
+        $res = $stmt->execute();
+        $next = $res ? $res->fetchArray(SQLITE3_ASSOC) : null;
+
+        return [
+            'doctor_id'    => $userId,
+            'has_next'     => !empty($next),
+            'next_patient' => $next,
         ];
     }
 }

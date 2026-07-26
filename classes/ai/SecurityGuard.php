@@ -148,6 +148,10 @@ class SecurityGuard
                 'getAssignedPatients',
                 'getConsultationHistory',
                 'getUpcomingAppointments',
+                'searchAssignedPatientRecords',
+                'getDoctorAvailability',
+                'getPrescriptionLog',
+                'getNextPatient',
             ],
             'Staff' => [
                 'getAvailableDoctors',
