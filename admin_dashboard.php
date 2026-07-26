@@ -593,11 +593,6 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
 </head>
 <body>
 
-    <!-- Emergency Screening Banner -->
-    <div class="emr-emergency-bar">
-        Admin Console Active &mdash; CLINICK System Administration & Audit Portal
-    </div>
-
     <div class="dashboard-container">
 
         <!-- EMR Top Navigation -->

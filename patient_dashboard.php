@@ -429,11 +429,6 @@ $presc_count = $stmt_presc->execute()->fetchArray(SQLITE3_ASSOC)['count'] ?? 0;
 </head>
 <body>
 
-    <!-- Emergency Screening Banner -->
-    <div class="emr-emergency-bar">
-        Patient Portal Active &mdash; CLINICK Healthcare System
-    </div>
-
     <div class="dashboard-container">
 
         <!-- EMR Top Navigation -->

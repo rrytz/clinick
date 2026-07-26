@@ -241,11 +241,6 @@ if (!function_exists('get_trend_html')) {
 </head>
 <body>
 
-    <!-- Emergency Screening Banner -->
-    <div class="emr-emergency-bar">
-        Emergency Screening System Active &mdash; Protocol 4-A
-    </div>
-
     <div class="dashboard-container">
 
         <!-- EMR Top Navigation -->

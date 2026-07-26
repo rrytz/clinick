@@ -573,11 +573,6 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
 </head>
 <body>
 
-    <!-- Emergency Screening Banner -->
-    <div class="emr-emergency-bar">
-        Staff Operations Active &mdash; Frontdesk & Clinical Management Portal
-    </div>
-
     <div class="dashboard-container">
 
         <!-- EMR Top Navigation -->
