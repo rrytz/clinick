@@ -758,44 +758,38 @@ if (!function_exists('get_trend_html')) {
             ?>
                 <div id="wa-app" style="background: var(--wa-bg);" class="-mx-6 -mb-6 px-4 sm:px-6 lg:px-8 pt-2 pb-8">
                     <!-- Header/toolbar row -->
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                    <div class="wa-header-row">
                         <div>
-                            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                <i class="fa-solid fa-calendar-days text-teal-600"></i>
+                            <h2 style="font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin: 0;" class="wa-text-main">
+                                <i class="fa-solid fa-calendar-days" style="color: var(--primary);"></i>
                                 <span><?php echo "$month_name $year"; ?></span>
-                            </h1>
-                            <p class="text-sm text-slate-500 mt-1">Manage your clinical shifts, daily availability, and schedules.</p>
+                            </h2>
+                            <p class="wa-text-muted" style="font-size: 0.875rem; margin-top: 0.25rem;">Manage your clinical shifts, daily availability, and schedules.</p>
                         </div>
                         
-                        <div class="flex flex-wrap items-center gap-3">
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;">
                             <!-- Navigation Buttons -->
-                            <div class="inline-flex rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-1 shadow-sm">
-                                <a href="?tab=availability&month=<?php echo $prev_month; ?>&year=<?php echo $prev_year; ?>" 
-                                   class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-250 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md">
-                                    <i class="fa-solid fa-chevron-left mr-1"></i> Prev
+                            <div class="wa-btn-group">
+                                <a href="?tab=availability&month=<?php echo $prev_month; ?>&year=<?php echo $prev_year; ?>" class="wa-btn-item">
+                                    <i class="fa-solid fa-chevron-left" style="margin-right: 4px;"></i> Prev
                                 </a>
-                                <a href="?tab=availability&month=<?php echo date('n'); ?>&year=<?php echo date('Y'); ?>" 
-                                   class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-250 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md">
+                                <a href="?tab=availability&month=<?php echo date('n'); ?>&year=<?php echo date('Y'); ?>" class="wa-btn-item">
                                     Today
                                 </a>
-                                <a href="?tab=availability&month=<?php echo $next_month; ?>&year=<?php echo $next_year; ?>" 
-                                   class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-255 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md">
-                                    Next <i class="fa-solid fa-chevron-right ml-1"></i>
+                                <a href="?tab=availability&month=<?php echo $next_month; ?>&year=<?php echo $next_year; ?>" class="wa-btn-item">
+                                    Next <i class="fa-solid fa-chevron-right" style="margin-left: 4px;"></i>
                                 </a>
                             </div>
                             
                             <!-- View Toggle Buttons -->
-                            <div class="inline-flex rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-1 shadow-sm">
-                                <button onclick="setWAView('month')" id="btn-view-month"
-                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400">
+                            <div class="wa-btn-group">
+                                <button onclick="setWAView('month')" id="btn-view-month" class="wa-btn-item active">
                                     Month
                                 </button>
-                                <button onclick="setWAView('week')" id="btn-view-week"
-                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-slate-750 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800">
+                                <button onclick="setWAView('week')" id="btn-view-week" class="wa-btn-item">
                                     Week
                                 </button>
-                                <button onclick="setWAView('list')" id="btn-view-list"
-                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-slate-750 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800">
+                                <button onclick="setWAView('list')" id="btn-view-list" class="wa-btn-item">
                                     List
                                 </button>
                             </div>
@@ -803,7 +797,7 @@ if (!function_exists('get_trend_html')) {
                     </div>
 
                     <!-- Summary Cards Row -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="wa-summary-grid">
                         <!-- Available Days Card -->
                         <div class="wa-card p-4 rounded-xl flex items-center gap-4">
                             <div class="w-10 h-10 rounded-lg wa-pill-avail flex items-center justify-center">
@@ -850,14 +844,14 @@ if (!function_exists('get_trend_html')) {
                     </div>
 
                     <!-- Two-Column Layout Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="wa-layout-grid">
                         <!-- Left Column: Calendar Views -->
-                        <div class="lg:col-span-8 flex flex-col gap-6">
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                             
                             <!-- MONTH VIEW (id="wa-month") -->
-                            <div id="wa-month" class="wa-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
+                            <div id="wa-month" class="wa-card p-4">
                                 <!-- Weekday Headers -->
-                                <div class="grid grid-cols-7 gap-2 text-center text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
+                                <div class="wa-calendar-weekdays">
                                     <div>Sun</div>
                                     <div>Mon</div>
                                     <div>Tue</div>
@@ -868,10 +862,10 @@ if (!function_exists('get_trend_html')) {
                                 </div>
                                 
                                 <!-- Days Grid -->
-                                <div class="grid grid-cols-7 gap-2">
+                                <div class="wa-calendar-grid">
                                     <!-- Blank offset days -->
                                     <?php for ($i = 0; $i < $first_day_weekday; $i++): ?>
-                                        <div class="aspect-square bg-slate-50/50 dark:bg-slate-800/20 rounded-lg border border-dashed border-slate-100 dark:border-slate-800/30"></div>
+                                        <div class="wa-cell-blank"></div>
                                     <?php endfor; ?>
                                     
                                     <!-- Day cells -->
@@ -907,28 +901,28 @@ if (!function_exists('get_trend_html')) {
                                              data-date="<?php echo $current_date_str; ?>"
                                              data-status="<?php echo htmlspecialchars($status); ?>"
                                              data-notes="<?php echo htmlspecialchars($notes); ?>"
-                                             class="wa-cell aspect-square border <?php echo $is_today ? 'border-teal-500 ring-2 ring-teal-500/20' : ''; ?> rounded-lg p-2 flex flex-col justify-between cursor-pointer transition relative group">
+                                             class="wa-cell <?php echo $is_today ? 'style="border-color: var(--primary) !important;"' : ''; ?>">
                                             
-                                            <div class="flex items-center justify-between">
-                                                <span class="text-xs font-bold wa-text-main <?php echo $is_today ? 'text-teal-650 font-extrabold' : ''; ?>">
+                                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                                <span style="font-size: 0.85rem; font-weight: 700;" class="wa-text-main">
                                                     <?php echo $day; ?>
                                                 </span>
                                                 <?php if ($appts_today > 0): ?>
-                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xxs font-medium wa-pill-avail" title="<?php echo $appts_today; ?> appointments booked">
+                                                    <span class="wa-pill-avail" style="padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: 600;" title="<?php echo $appts_today; ?> appointments booked">
                                                         <?php echo $appts_today; ?> Appt
                                                     </span>
                                                 <?php endif; ?>
                                             </div>
                                             
-                                            <div class="flex flex-col gap-1 mt-auto">
+                                            <div style="display: flex; flex-direction: column; gap: 4px; margin-top: auto;">
                                                 <?php if ($status): ?>
-                                                    <span class="px-1.5 py-0.5 text-xxs font-semibold rounded-md border text-center truncate <?php echo $pill_class; ?>">
+                                                    <span style="padding: 2px 4px; font-size: 0.7rem; font-weight: 600; border-radius: 4px; text-align: center;" class="<?php echo $pill_class; ?>">
                                                         <?php echo $status; ?>
                                                     </span>
                                                 <?php endif; ?>
                                                 
                                                 <?php if ($notes): ?>
-                                                    <span class="text-xxs wa-text-muted truncate block mt-0.5" title="<?php echo htmlspecialchars($notes); ?>">
+                                                    <span class="wa-text-muted" style="font-size: 0.7rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?php echo htmlspecialchars($notes); ?>">
                                                         <?php echo htmlspecialchars($notes); ?>
                                                     </span>
                                                 <?php endif; ?>
@@ -1075,45 +1069,45 @@ if (!function_exists('get_trend_html')) {
                         </div>
                         
                         <!-- Right Column: Side Info Panel -->
-                        <div class="lg:col-span-4 flex flex-col gap-6">
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                             <!-- Panel 1: Today's Availability -->
-                            <div class="wa-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-4">
-                                <h3 class="text-sm font-semibold text-slate-850 dark:text-white mb-3 flex items-center gap-2">
-                                    <i class="fa-solid fa-clock text-teal-500"></i> Today's Schedule Overview
+                            <div class="wa-card p-4">
+                                <h3 style="font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;" class="wa-text-main">
+                                    <i class="fa-solid fa-clock" style="color: var(--primary);"></i> Today's Schedule Overview
                                 </h3>
                                 
-                                <div class="bg-slate-50 dark:bg-slate-800/40 rounded-lg p-3 border border-slate-100 dark:border-slate-800/50 mb-3">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <span class="text-xs text-slate-500">Date</span>
-                                        <span class="text-xs font-semibold text-slate-800 dark:text-slate-200"><?php echo date('l, M j'); ?></span>
+                                <div style="background: rgba(241, 245, 249, 0.5); padding: 0.75rem; border-radius: 0.75rem; border: 1px solid var(--border-color); margin-bottom: 0.75rem;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span class="wa-text-muted" style="font-size: 0.8rem;">Date</span>
+                                        <span class="wa-text-main" style="font-size: 0.8rem; font-weight: 600;"><?php echo date('l, M j'); ?></span>
                                     </div>
-                                    <div class="flex items-center justify-between mb-2">
-                                        <span class="text-xs text-slate-500">Shifts Status</span>
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span class="wa-text-muted" style="font-size: 0.8rem;">Shifts Status</span>
                                         <?php if ($today_av): ?>
-                                            <span class="px-2 py-0.5 text-xxs font-semibold rounded-md border <?php echo $today_av['status'] === 'Available' ? 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-900/20 dark:text-teal-400' : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/20 dark:text-rose-400'; ?>">
+                                            <span style="padding: 2px 6px; font-size: 0.7rem; font-weight: 600; border-radius: 4px;" class="<?php echo $today_av['status'] === 'Available' ? 'wa-pill-avail' : 'wa-pill-unavail'; ?>">
                                                 <?php echo $today_av['status']; ?>
                                             </span>
                                         <?php else: ?>
-                                            <span class="text-xxs font-semibold rounded-md border bg-slate-100 text-slate-600 border-slate-200">Not Set</span>
+                                            <span style="padding: 2px 6px; font-size: 0.7rem; font-weight: 600; border-radius: 4px; background: #e2e8f0; color: #475569;">Not Set</span>
                                         <?php endif; ?>
                                     </div>
                                     <?php if ($today_av && $today_av['notes']): ?>
-                                        <div class="text-xxs text-slate-500 border-t border-slate-200/50 pt-2 mt-2">
+                                        <div class="wa-text-muted" style="font-size: 0.75rem; border-top: 1px solid var(--border-color); pt-2 mt-2">
                                             <strong>Hours:</strong> <?php echo htmlspecialchars($today_av['notes']); ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
                                 
-                                <div class="flex items-center justify-between text-xs border-t border-slate-100 dark:border-slate-800/50 pt-3">
-                                    <span class="text-slate-550">Active Bookings Today</span>
-                                    <span class="font-bold text-slate-800 dark:text-white"><?php echo $today_appt_count; ?> appointments</span>
+                                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+                                    <span class="wa-text-muted">Active Bookings Today</span>
+                                    <span class="wa-text-main" style="font-weight: 700;"><?php echo $today_appt_count; ?> appointments</span>
                                 </div>
                             </div>
 
                             <!-- Panel 2: Upcoming Schedule -->
-                            <div class="wa-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-4">
-                                <h3 class="text-sm font-semibold text-slate-850 dark:text-white mb-3 flex items-center gap-2">
-                                    <i class="fa-solid fa-list-check text-indigo-500"></i> Upcoming Patient Visits
+                            <div class="wa-card p-4">
+                                <h3 style="font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;" class="wa-text-main">
+                                    <i class="fa-solid fa-list-check" style="color: #6366f1;"></i> Upcoming Patient Visits
                                 </h3>
                                 
                                 <div class="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">

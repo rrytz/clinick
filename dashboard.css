@@ -3112,6 +3112,65 @@ h6 {
     color: var(--text-muted) !important;
 }
 
+#wa-app .wa-header-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+#wa-app .wa-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 992px) {
+    #wa-app .wa-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    #wa-app .wa-summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+#wa-app .wa-layout-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 992px) {
+    #wa-app .wa-layout-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+#wa-app .wa-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+#wa-app .wa-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
 .wa-card {
     background: #ffffff !important;
     border: 1px solid var(--border-color) !important;
@@ -3127,10 +3186,17 @@ h6 {
 }
 
 .wa-cell {
+    aspect-ratio: 1 / 1;
+    min-height: 75px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     background: #ffffff !important;
     border: 1px solid var(--border-color) !important;
     border-radius: 0.85rem;
     transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
 .wa-cell:hover {
@@ -3146,6 +3212,19 @@ h6 {
 [data-theme="dark"] .wa-cell:hover {
     background: #1e293b !important;
     border-color: #334155 !important;
+}
+
+.wa-cell-blank {
+    aspect-ratio: 1 / 1;
+    min-height: 75px;
+    background: rgba(241, 245, 249, 0.4);
+    border: 1px dashed var(--border-color);
+    border-radius: 0.85rem;
+}
+
+[data-theme="dark"] .wa-cell-blank {
+    background: rgba(30, 41, 59, 0.3);
+    border-color: #334155;
 }
 
 .wa-text-main {
@@ -3182,10 +3261,12 @@ h6 {
 
 .wa-btn-group {
     display: inline-flex;
+    align-items: center;
     border-radius: 0.75rem;
     border: 1px solid var(--border-color);
     background: #ffffff;
     padding: 3px;
+    gap: 3px;
 }
 
 [data-theme="dark"] .wa-btn-group {
@@ -3202,6 +3283,9 @@ h6 {
     color: var(--text-main);
     border-radius: 0.5rem;
     text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
@@ -3214,7 +3298,7 @@ h6 {
     background: #334155;
 }
 
-.wa-btn-active {
+.wa-btn-item.active {
     background: var(--primary) !important;
     color: #ffffff !important;
 }
