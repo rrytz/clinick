@@ -582,6 +582,11 @@ $presc_count = $stmt_presc->execute()->fetchArray(SQLITE3_ASSOC)['count'] ?? 0;
                             </div>
                             <?php endif; ?>
                         </div>
+                    </div>
+                </div>
+
+                <script>
+                function selectBodyPart(part) {
                     document.querySelectorAll('.hotspot').forEach(el => el.classList.remove('active'));
                     const targetDot = document.querySelector('.hotspot-' + part);
                     if (targetDot) targetDot.classList.add('active');
