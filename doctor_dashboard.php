@@ -237,45 +237,6 @@ if (!function_exists('get_trend_html')) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Dashboard Styling -->
     <link rel="stylesheet" href="dashboard.css?v=<?php echo filemtime('dashboard.css'); ?>">
-    <?php if ($tab === 'availability'): ?>
-    <!-- Tailwind CSS (scoped usage for the Work Availability redesign) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        corePlugins: { preflight: false }, // avoid clobbering existing dashboard.css
-        theme: {
-          extend: {
-            colors: {
-              teal: {
-                50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4',
-                400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e'
-              },
-              slate: {
-                50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1',
-                400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155',
-                800: '#1e293b', 900: '#0f172a'
-              }
-            },
-            borderRadius: { xl2: '12px' },
-            boxShadow: {
-              soft: '0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.05)',
-              softer: '0 1px 3px rgba(15,23,42,0.06)'
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      /* Scoped tokens for the availability redesign */
-      #wa-app { --wa-bg:#F8FAFC; --wa-teal:#14B8A6; }
-      #wa-app .wa-card { background:#fff; border:1px solid #e2e8f0; border-radius:12px; box-shadow:0 1px 2px rgba(15,23,42,.04),0 4px 12px rgba(15,23,42,.05); }
-      #wa-app .wa-cell { transition:all .15s ease; }
-      #wa-app .wa-cell:hover { border-color:#5eead4; box-shadow:0 0 0 2px rgba(20,184,166,.15); }
-      #wa-app .wa-scroll::-webkit-scrollbar{ width:6px; }
-      #wa-app .wa-scroll::-webkit-scrollbar-thumb{ background:#cbd5e1; border-radius:3px; }
-      html[data-theme='dark'] #wa-app { --wa-bg:#0f172a; }
-    </style>
-    <?php endif; ?>
     <script src="js/theme-controller.js?v=<?php echo filemtime('js/theme-controller.js'); ?>"></script>
 </head>
 <body>
@@ -349,9 +310,19 @@ if (!function_exists('get_trend_html')) {
         <main class="main-content">
             
             <!-- Hero Section (Letters Clinic Style) -->
+            <?php
+            $tab_titles = [
+                'overview' => 'Clinic Overview',
+                'appointments' => 'Patient Schedule & Visits',
+                'prescribe' => 'Prescribe Medication',
+                'patients' => 'Registered Patients Index',
+                'availability' => 'Work Availability Schedule'
+            ];
+            $hero_title = $tab_titles[$tab] ?? 'Clinic Workspace';
+            ?>
             <div class="letters-hero-section">
                 <div class="letters-hero-date"><?php echo date('l, F j'); ?></div>
-                <h1 class="letters-hero-title">Clinic Overview</h1>
+                <h1 class="letters-hero-title"><?php echo htmlspecialchars($hero_title); ?></h1>
             </div>
 
             <?php if (!empty($success_msg)): ?>
@@ -834,46 +805,46 @@ if (!function_exists('get_trend_html')) {
                     <!-- Summary Cards Row -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                         <!-- Available Days Card -->
-                        <div class="wa-card bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                        <div class="wa-card p-4 rounded-xl flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg wa-pill-avail flex items-center justify-center">
                                 <i class="fa-solid fa-circle-check text-lg"></i>
                             </div>
                             <div>
-                                <span class="text-xs text-slate-550 block">Available Days</span>
-                                <span class="text-xl font-bold text-slate-950 dark:text-white"><?php echo $my_available_days; ?></span>
+                                <span class="text-xs wa-text-muted block font-semibold">Available Days</span>
+                                <span class="text-xl font-bold wa-text-main"><?php echo $my_available_days; ?></span>
                             </div>
                         </div>
 
                         <!-- Unavailable Days Card -->
-                        <div class="wa-card bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-rose-50 dark:bg-rose-900/20 flex items-center justify-center text-rose-600 dark:text-rose-400">
+                        <div class="wa-card p-4 rounded-xl flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg wa-pill-unavail flex items-center justify-center">
                                 <i class="fa-solid fa-circle-xmark text-lg"></i>
                             </div>
                             <div>
-                                <span class="text-xs text-slate-550 block">Days Off / Unavailable</span>
-                                <span class="text-xl font-bold text-slate-950 dark:text-white"><?php echo $my_unavailable_days; ?></span>
+                                <span class="text-xs wa-text-muted block font-semibold">Days Off / Unavailable</span>
+                                <span class="text-xl font-bold wa-text-main"><?php echo $my_unavailable_days; ?></span>
                             </div>
                         </div>
 
                         <!-- Booked Appointments Card -->
-                        <div class="wa-card bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                        <div class="wa-card p-4 rounded-xl flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg wa-pill-avail flex items-center justify-center">
                                 <i class="fa-solid fa-calendar-check text-lg"></i>
                             </div>
                             <div>
-                                <span class="text-xs text-slate-550 block">Booked Appointments</span>
-                                <span class="text-xl font-bold text-slate-950 dark:text-white"><?php echo $booked_appts_month; ?></span>
+                                <span class="text-xs wa-text-muted block font-semibold">Booked Appointments</span>
+                                <span class="text-xl font-bold wa-text-main"><?php echo $booked_appts_month; ?></span>
                             </div>
                         </div>
 
                         <!-- Utilization Rate Card -->
-                        <div class="wa-card bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                        <div class="wa-card p-4 rounded-xl flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg wa-pill-avail flex items-center justify-center">
                                 <i class="fa-solid fa-chart-pie text-lg"></i>
                             </div>
                             <div>
-                                <span class="text-xs text-slate-550 block">Utilization Rate</span>
-                                <span class="text-xl font-bold text-slate-950 dark:text-white"><?php echo $utilization; ?>%</span>
+                                <span class="text-xs wa-text-muted block font-semibold">Utilization Rate</span>
+                                <span class="text-xl font-bold wa-text-main"><?php echo $utilization; ?>%</span>
                             </div>
                         </div>
                     </div>
@@ -927,23 +898,23 @@ if (!function_exists('get_trend_html')) {
                                         // Render status pill options
                                         $pill_class = "";
                                         if ($status === 'Available') {
-                                            $pill_class = "bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 border-teal-200/50";
+                                            $pill_class = "wa-pill-avail";
                                         } elseif ($status === 'Unavailable') {
-                                            $pill_class = "bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400 border-rose-200/50";
+                                            $pill_class = "wa-pill-unavail";
                                         }
                                     ?>
                                         <div onclick="openAvailabilityModal(this)"
                                              data-date="<?php echo $current_date_str; ?>"
                                              data-status="<?php echo htmlspecialchars($status); ?>"
                                              data-notes="<?php echo htmlspecialchars($notes); ?>"
-                                             class="wa-cell aspect-square bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/50 border <?php echo $is_today ? 'border-teal-500 ring-2 ring-teal-500/20' : 'border-slate-200 dark:border-slate-800'; ?> rounded-lg p-2 flex flex-col justify-between cursor-pointer transition relative group">
+                                             class="wa-cell aspect-square border <?php echo $is_today ? 'border-teal-500 ring-2 ring-teal-500/20' : ''; ?> rounded-lg p-2 flex flex-col justify-between cursor-pointer transition relative group">
                                             
                                             <div class="flex items-center justify-between">
-                                                <span class="text-xs font-bold <?php echo $is_today ? 'text-teal-650 font-extrabold' : 'text-slate-700 dark:text-slate-300'; ?>">
+                                                <span class="text-xs font-bold wa-text-main <?php echo $is_today ? 'text-teal-650 font-extrabold' : ''; ?>">
                                                     <?php echo $day; ?>
                                                 </span>
                                                 <?php if ($appts_today > 0): ?>
-                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xxs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400" title="<?php echo $appts_today; ?> appointments booked">
+                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xxs font-medium wa-pill-avail" title="<?php echo $appts_today; ?> appointments booked">
                                                         <?php echo $appts_today; ?> Appt
                                                     </span>
                                                 <?php endif; ?>
@@ -957,7 +928,7 @@ if (!function_exists('get_trend_html')) {
                                                 <?php endif; ?>
                                                 
                                                 <?php if ($notes): ?>
-                                                    <span class="text-xxs text-slate-400 dark:text-slate-500 truncate block mt-0.5" title="<?php echo htmlspecialchars($notes); ?>">
+                                                    <span class="text-xxs wa-text-muted truncate block mt-0.5" title="<?php echo htmlspecialchars($notes); ?>">
                                                         <?php echo htmlspecialchars($notes); ?>
                                                     </span>
                                                 <?php endif; ?>
