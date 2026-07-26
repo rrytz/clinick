@@ -573,84 +573,45 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
 </head>
 <body>
 
+    <!-- Emergency Screening Banner -->
+    <div class="emr-emergency-bar">
+        Staff Operations Active &mdash; Frontdesk & Clinical Management Portal
+    </div>
+
     <div class="dashboard-container">
-        
-        <!-- Top Navigation -->
-        <header class="top-nav">
-            <a href="?tab=overview" class="nav-brand">
-                <span class="nav-brand-mark">CL</span>
-                <span>CLINICK</span>
-            </a>
-            
-            <div class="nav-tabs-wrapper">
-                <ul class="nav-tabs">
-                    <li>
-                        <a href="?tab=overview" class="nav-link <?php echo $tab === 'overview' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-chart-line"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=patients" class="nav-link <?php echo $tab === 'patients' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-id-card"></i>
-                            <span>Patient Records</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=appointments" class="nav-link <?php echo $tab === 'appointments' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-calendar-check"></i>
-                            <span>Appointments</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=checkin" class="nav-link <?php echo $tab === 'checkin' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-qrcode"></i>
-                            <span>Check-In</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=reports" class="nav-link <?php echo $tab === 'reports' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-chart-pie"></i>
-                            <span>Reports</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=notifications" class="nav-link <?php echo $tab === 'notifications' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-bell"></i>
-                            <span>Notifications</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="nav-actions">
-                <div class="nav-user">
-                    <div class="nav-user-avatar">
-                        <i class="fa-solid fa-user-gear"></i>
-                    </div>
-                    <div class="nav-user-details">
-                        <span class="nav-user-name"><?php echo htmlspecialchars($staff_name); ?></span>
-                        <span class="nav-user-role"><?php echo htmlspecialchars($staff_role); ?></span>
-                    </div>
-                </div>
-                
-                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode" style="margin:0;">
-                    <span class="theme-toggle-thumb"><i class="fa-solid fa-sun"></i></span>
+
+        <!-- EMR Top Navigation -->
+        <header class="emr-top-nav">
+            <a href="?tab=overview" class="emr-brand">CLINICK.</a>
+
+            <ul class="emr-nav-tabs">
+                <li><a href="?tab=overview" class="emr-nav-link <?php echo $tab === 'overview' ? 'active' : ''; ?>">Dashboard</a></li>
+                <li><a href="?tab=patients" class="emr-nav-link <?php echo $tab === 'patients' ? 'active' : ''; ?>">Patients</a></li>
+                <li><a href="?tab=appointments" class="emr-nav-link <?php echo $tab === 'appointments' ? 'active' : ''; ?>">Appointments</a></li>
+                <li><a href="?tab=checkin" class="emr-nav-link <?php echo $tab === 'checkin' ? 'active' : ''; ?>">Check-In</a></li>
+                <li><a href="?tab=reports" class="emr-nav-link <?php echo $tab === 'reports' ? 'active' : ''; ?>">Reports</a></li>
+                <li><a href="?tab=notifications" class="emr-nav-link <?php echo $tab === 'notifications' ? 'active' : ''; ?>">Notifications</a></li>
+            </ul>
+
+            <div class="emr-nav-actions">
+                <span class="emr-nav-bell" title="Notifications"><i class="fa-regular fa-bell"></i></span>
+                <button class="emr-theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
                 </button>
-                
-                <a href="index.php?logout=true" class="btn btn-logout btn-secondary btn-sm" title="Sign Out" style="margin-left: 0.5rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; padding: 0;">
+                <span class="emr-nav-username"><?php echo strtoupper(htmlspecialchars($staff_name)); ?></span>
+                <a href="index.php?logout=true" class="emr-nav-logout" title="Sign Out">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
             </div>
         </header>
 
-        <!-- Main Workspace -->
-        <main class="main-content">
-            
-            <!-- Hero Section (Letters Clinic Style) -->
-            <div class="letters-hero-section">
-                <div class="letters-hero-date"><?php echo date('l, F j'); ?></div>
-                <h1 class="letters-hero-title">Clinical Staff & Operations Hub</h1>
+        <!-- Main Staff Workspace -->
+        <main class="emr-main-content">
+
+            <!-- EMR Hero Section -->
+            <div class="emr-hero">
+                <h1 class="emr-hero-title">Managing frontdesk operations and patient coordination.</h1>
+                <p class="emr-hero-subtitle"><?php echo htmlspecialchars($staff_role); ?> &mdash; <?php echo date('l, F j, Y'); ?>. Clinic operations dashboard is active.</p>
             </div>
 
             <?php if (!empty($success_msg)): ?>

@@ -3499,3 +3499,889 @@ textarea:focus-visible {
 [data-theme="dark"] .letters-table-row:hover {
     background: rgba(255, 255, 255, 0.03);
 }
+
+/* ══════════════════════════════════════════════════════════════
+   LETTERS EMR 2.0 — Visual Design System
+   Reference: Letters EMR clinical dashboard aesthetic
+   All classes prefixed with .emr- to prevent collision
+   ══════════════════════════════════════════════════════════════ */
+
+/* ─── Emergency Screening Banner ───────────────────────────── */
+.emr-emergency-bar {
+    background: #c8102e;
+    color: #ffffff;
+    text-align: center;
+    padding: 7px 24px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+    z-index: 300;
+    border-bottom: 1px solid #a00d24;
+    font-family: 'Inter', monospace, sans-serif;
+}
+
+/* ─── EMR Top Navigation ────────────────────────────────────── */
+.emr-top-nav {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 32px;
+    height: 52px;
+    position: sticky;
+    top: 33px;
+    z-index: 200;
+    gap: 0;
+}
+
+[data-theme="dark"] .emr-top-nav {
+    background: #0f172a;
+    border-bottom-color: #334155;
+}
+
+.emr-brand {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.04em;
+    text-decoration: none;
+    margin-right: 28px;
+    flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] .emr-brand {
+    color: #f8fafc;
+}
+
+.emr-brand:hover {
+    color: #0f172a;
+    text-decoration: none;
+}
+
+[data-theme="dark"] .emr-brand:hover {
+    color: #f8fafc;
+}
+
+.emr-nav-tabs {
+    display: flex;
+    list-style: none;
+    height: 52px;
+    gap: 0;
+    flex: 1;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.emr-nav-tabs li {
+    height: 52px;
+    display: flex;
+    align-items: center;
+}
+
+.emr-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    height: 52px;
+    text-decoration: none;
+    color: #94a3b8;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.12s;
+    white-space: nowrap;
+    border: none;
+    background: none;
+    font-family: 'Inter', sans-serif;
+    line-height: 1;
+}
+
+.emr-nav-link:hover {
+    color: #0f172a;
+    text-decoration: none;
+}
+
+.emr-nav-link.active {
+    color: #0f172a;
+    border: 1.5px solid #0f172a;
+    border-radius: 3px;
+    height: 28px;
+    margin: 0 4px;
+    padding: 0 10px;
+    background: transparent;
+}
+
+[data-theme="dark"] .emr-nav-link {
+    color: #64748b;
+}
+
+[data-theme="dark"] .emr-nav-link:hover {
+    color: #f8fafc;
+    text-decoration: none;
+}
+
+[data-theme="dark"] .emr-nav-link.active {
+    color: #f8fafc;
+    border-color: #f8fafc;
+}
+
+.emr-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.emr-nav-username {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] .emr-nav-username {
+    color: #f8fafc;
+}
+
+.emr-nav-bell {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    width: 32px;
+    height: 32px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.12s, color 0.12s;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.emr-nav-bell:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    text-decoration: none;
+}
+
+[data-theme="dark"] .emr-nav-bell {
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .emr-nav-bell:hover {
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+.emr-nav-logout {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    width: 32px;
+    height: 32px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.12s;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.emr-nav-logout:hover {
+    background: #fee2e2;
+    color: #ef4444;
+    border-color: #ef4444;
+    text-decoration: none;
+}
+
+[data-theme="dark"] .emr-nav-logout {
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .emr-nav-logout:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border-color: #f87171;
+}
+
+/* ─── EMR Theme Toggle (Flat Square Style) ─────────────────── */
+.emr-theme-toggle {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    width: 32px;
+    height: 32px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.12s, color 0.12s;
+    flex-shrink: 0;
+}
+
+.emr-theme-toggle:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+[data-theme="dark"] .emr-theme-toggle {
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .emr-theme-toggle:hover {
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+/* ─── EMR Hero Section ──────────────────────────────────────── */
+.emr-hero {
+    padding: 36px 0 28px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 36px;
+}
+
+[data-theme="dark"] .emr-hero {
+    border-bottom-color: #334155;
+}
+
+.emr-hero-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+    max-width: 600px;
+    font-family: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] .emr-hero-title {
+    color: #f8fafc;
+}
+
+.emr-hero-subtitle {
+    font-size: 0.825rem;
+    color: #64748b;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+}
+
+[data-theme="dark"] .emr-hero-subtitle {
+    color: #94a3b8;
+}
+
+/* ─── EMR Content Grid (70/30 open layout) ──────────────────── */
+.emr-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 268px;
+    gap: 48px;
+    align-items: start;
+}
+
+@media (max-width: 960px) {
+    .emr-content-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+}
+
+/* ─── EMR Section Labels ────────────────────────────────────── */
+.emr-section-label {
+    font-size: 0.67rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+    font-family: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] .emr-section-label {
+    color: #64748b;
+}
+
+/* ─── EMR Appointments Table ────────────────────────────────── */
+.emr-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-family: 'Inter', sans-serif;
+}
+
+.emr-table thead tr {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="dark"] .emr-table thead tr {
+    border-bottom-color: #334155;
+}
+
+.emr-table th {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 8px 12px 10px;
+    text-align: left;
+}
+
+[data-theme="dark"] .emr-table th {
+    color: #64748b;
+}
+
+.emr-table td {
+    padding: 15px 12px;
+    font-size: 0.82rem;
+    color: #0f172a;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+[data-theme="dark"] .emr-table td {
+    color: #e2e8f0;
+    border-bottom-color: #1e293b;
+}
+
+.emr-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.emr-table tbody tr:hover td {
+    background: #f8fafc;
+}
+
+[data-theme="dark"] .emr-table tbody tr:hover td {
+    background: #1e293b;
+}
+
+.emr-table .emr-time-cell {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #0f766e;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .emr-table .emr-time-cell {
+    color: #2dd4bf;
+}
+
+.emr-table .emr-patient-cell {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+[data-theme="dark"] .emr-table .emr-patient-cell {
+    color: #f8fafc;
+}
+
+.emr-table .emr-condition-cell {
+    color: #0f766e;
+    font-weight: 500;
+}
+
+[data-theme="dark"] .emr-table .emr-condition-cell {
+    color: #2dd4bf;
+}
+
+/* ─── EMR Status Badges (Rectangular) ──────────────────────── */
+.emr-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+}
+
+.emr-badge-scheduled {
+    border: 1px solid #334155;
+    color: #334155;
+    background: transparent;
+}
+
+.emr-badge-inprogress {
+    background: #0f172a;
+    color: #ffffff;
+    border: 1px solid #0f172a;
+}
+
+.emr-badge-completed {
+    background: #0f766e;
+    color: #ffffff;
+    border: 1px solid #0f766e;
+}
+
+.emr-badge-cancelled {
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    background: transparent;
+}
+
+.emr-badge-noshow {
+    border: 1px solid #f59e0b;
+    color: #92400e;
+    background: #fef3c7;
+}
+
+.emr-badge-rescheduled {
+    border: 1px solid #6366f1;
+    color: #6366f1;
+    background: transparent;
+}
+
+[data-theme="dark"] .emr-badge-scheduled {
+    border-color: #94a3b8;
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .emr-badge-inprogress {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: #f8fafc;
+}
+
+[data-theme="dark"] .emr-badge-completed {
+    background: #0f766e;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .emr-badge-cancelled {
+    border-color: #f87171;
+    color: #f87171;
+}
+
+[data-theme="dark"] .emr-badge-noshow {
+    border-color: #fbbf24;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+}
+
+/* ─── EMR Action Buttons (Rectangular) ─────────────────────── */
+.emr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid #334155;
+    background: transparent;
+    color: #334155;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+    line-height: 1;
+}
+
+.emr-btn:hover {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+    text-decoration: none;
+}
+
+.emr-btn-solid {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+}
+
+.emr-btn-solid:hover {
+    background: #334155;
+    color: #ffffff;
+    border-color: #334155;
+    text-decoration: none;
+}
+
+.emr-btn-teal {
+    background: #0f766e;
+    color: #ffffff;
+    border-color: #0f766e;
+}
+
+.emr-btn-teal:hover {
+    background: #115e59;
+    color: #ffffff;
+    border-color: #115e59;
+    text-decoration: none;
+}
+
+.emr-btn-danger {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: transparent;
+}
+
+.emr-btn-danger:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+    text-decoration: none;
+}
+
+.emr-btn-warning {
+    border-color: #f59e0b;
+    color: #92400e;
+    background: transparent;
+}
+
+.emr-btn-warning:hover {
+    background: #f59e0b;
+    color: #ffffff;
+    border-color: #f59e0b;
+    text-decoration: none;
+}
+
+[data-theme="dark"] .emr-btn {
+    border-color: #94a3b8;
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .emr-btn:hover {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: #f8fafc;
+}
+
+[data-theme="dark"] .emr-btn-solid {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: #f8fafc;
+}
+
+[data-theme="dark"] .emr-btn-solid:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    border-color: #e2e8f0;
+}
+
+[data-theme="dark"] .emr-btn-teal {
+    background: #0d9488;
+    color: #ffffff;
+    border-color: #0d9488;
+}
+
+[data-theme="dark"] .emr-btn-teal:hover {
+    background: #0f766e;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .emr-btn-danger {
+    border-color: #f87171;
+    color: #f87171;
+}
+
+[data-theme="dark"] .emr-btn-danger:hover {
+    background: #f87171;
+    color: #ffffff;
+}
+
+.emr-btn-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* ─── EMR Metrics Column ────────────────────────────────────── */
+.emr-metrics-col {
+    /* Open column — no card border */
+}
+
+.emr-metric-item {
+    padding: 20px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="dark"] .emr-metric-item {
+    border-bottom-color: #334155;
+}
+
+.emr-metric-item:first-child {
+    padding-top: 0;
+}
+
+.emr-metric-item:last-child {
+    border-bottom: none;
+}
+
+.emr-metric-number {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+    font-family: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] .emr-metric-number {
+    color: #f8fafc;
+}
+
+.emr-metric-label {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] .emr-metric-label {
+    color: #64748b;
+}
+
+/* ─── EMR Full-Width CTA Button ─────────────────────────────── */
+.emr-cta-btn {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    background: #0f172a;
+    color: #ffffff;
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid #0f172a;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: background 0.12s;
+    font-family: 'Inter', sans-serif;
+}
+
+.emr-cta-btn:hover {
+    background: #334155;
+    border-color: #334155;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+[data-theme="dark"] .emr-cta-btn {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: #f8fafc;
+}
+
+[data-theme="dark"] .emr-cta-btn:hover {
+    background: #e2e8f0;
+    border-color: #e2e8f0;
+    color: #0f172a;
+}
+
+/* ─── EMR Records Grid ──────────────────────────────────────── */
+.emr-records-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    padding-top: 4px;
+}
+
+@media (max-width: 640px) {
+    .emr-records-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.emr-record-card {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+[data-theme="dark"] .emr-record-card {
+    border-bottom-color: #1e293b;
+}
+
+.emr-record-date {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] .emr-record-date {
+    color: #64748b;
+}
+
+.emr-record-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 5px;
+    line-height: 1.3;
+    font-family: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] .emr-record-title {
+    color: #f8fafc;
+}
+
+.emr-record-desc {
+    font-size: 0.78rem;
+    color: #64748b;
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] .emr-record-desc {
+    color: #94a3b8;
+}
+
+/* ─── EMR Main Content Area ─────────────────────────────────── */
+.emr-main-content {
+    padding: 0 32px 48px;
+    flex-grow: 1;
+    min-height: calc(100vh - 85px);
+    background: var(--bg-slate);
+}
+
+[data-theme="dark"] .emr-main-content {
+    background: #0f172a;
+}
+
+@media (max-width: 768px) {
+    .emr-top-nav {
+        padding: 0 16px;
+        top: 33px;
+    }
+    .emr-nav-tabs {
+        display: none;
+    }
+    .emr-main-content {
+        padding: 0 16px 32px;
+    }
+    .emr-hero-title {
+        font-size: 1.4rem;
+    }
+    .emr-content-grid {
+        grid-template-columns: 1fr;
+    }
+    .emr-table th, .emr-table td {
+        padding: 10px 8px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ─── EMR Empty State ────────────────────────────────────────── */
+.emr-empty-row td {
+    padding: 32px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.82rem;
+}
+
+[data-theme="dark"] .emr-empty-row td {
+    color: #64748b;
+}
+
+/* ─── EMR Form Card Wrapper ──────────────────────────────────── */
+.emr-form-section {
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 28px;
+    background: #ffffff;
+    margin-bottom: 24px;
+}
+
+[data-theme="dark"] .emr-form-section {
+    border-color: #334155;
+    background: #1e293b;
+}
+
+.emr-form-section h3 {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] .emr-form-section h3 {
+    color: #64748b;
+}
+
+/* ─── EMR Dashboard Grid (2-col variant for other tabs) ─────── */
+.emr-tab-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .emr-tab-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ─── EMR Alert Overrides ───────────────────────────────────── */
+.emr-alert {
+    padding: 12px 16px;
+    border-radius: 2px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.emr-alert-success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+}
+
+.emr-alert-danger {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+[data-theme="dark"] .emr-alert-success {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.2);
+    color: #4ade80;
+}
+
+[data-theme="dark"] .emr-alert-danger {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+}

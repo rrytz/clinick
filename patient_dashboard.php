@@ -429,63 +429,39 @@ $presc_count = $stmt_presc->execute()->fetchArray(SQLITE3_ASSOC)['count'] ?? 0;
 </head>
 <body>
 
+    <!-- Emergency Screening Banner -->
+    <div class="emr-emergency-bar">
+        Patient Portal Active &mdash; CLINICK Healthcare System
+    </div>
+
     <div class="dashboard-container">
-        
-        <!-- Top Navigation -->
-        <header class="top-nav">
-            <a href="?tab=overview" class="nav-brand">
-                <span class="nav-brand-mark">CL</span>
-                <span>CLINICK</span>
-            </a>
-            
-            <div class="nav-tabs-wrapper">
-                <ul class="nav-tabs">
-                    <li>
-                        <a href="?tab=overview" class="nav-link <?php echo $tab === 'overview' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-chart-line"></i>
-                            <span>Overview</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=appointments" class="nav-link <?php echo $tab === 'appointments' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-calendar-check"></i>
-                            <span>Appointments</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=records" class="nav-link <?php echo $tab === 'records' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-file-medical"></i>
-                            <span>Medical Records</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=symptom-checker" class="nav-link <?php echo $tab === 'symptom-checker' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-stethoscope"></i>
-                            <span>Symptom Checker</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="nav-actions">
-                <div class="nav-user">
-                    <div class="nav-user-avatar">
-                        <i class="fa-solid fa-hospital-user"></i>
-                    </div>
-                    <div class="nav-user-details">
-                        <span class="nav-user-name"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
-                        <span class="nav-user-role">Patient Portal</span>
-                    </div>
-                </div>
-                          <a href="index.php?logout=true" class="btn btn-logout btn-secondary btn-sm" title="Sign Out">
+
+        <!-- EMR Top Navigation -->
+        <header class="emr-top-nav">
+            <a href="?tab=overview" class="emr-brand">CLINICK.</a>
+
+            <ul class="emr-nav-tabs">
+                <li><a href="?tab=overview" class="emr-nav-link <?php echo $tab === 'overview' ? 'active' : ''; ?>">Overview</a></li>
+                <li><a href="?tab=appointments" class="emr-nav-link <?php echo $tab === 'appointments' ? 'active' : ''; ?>">Appointments</a></li>
+                <li><a href="?tab=records" class="emr-nav-link <?php echo $tab === 'records' ? 'active' : ''; ?>">Medical Records</a></li>
+                <li><a href="?tab=symptom-checker" class="emr-nav-link <?php echo $tab === 'symptom-checker' ? 'active' : ''; ?>">Symptom Checker</a></li>
+            </ul>
+
+            <div class="emr-nav-actions">
+                <span class="emr-nav-bell" title="Notifications"><i class="fa-regular fa-bell"></i></span>
+                <button class="emr-theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                </button>
+                <span class="emr-nav-username"><?php echo strtoupper(htmlspecialchars($_SESSION['user_name'])); ?></span>
+                <a href="index.php?logout=true" class="emr-nav-logout" title="Sign Out">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
             </div>
         </header>
 
-        <!-- Main Dashboard Viewport -->
-        <main class="main-content">
-            <!-- Hero Section (Letters Clinic Patient Portal Style) -->
+        <!-- Main Patient Portal Content -->
+        <main class="emr-main-content">
+            <!-- EMR Hero Section -->
             <?php
             $hour = (int)date('H');
             $greeting = 'Good morning';
@@ -493,9 +469,9 @@ $presc_count = $stmt_presc->execute()->fetchArray(SQLITE3_ASSOC)['count'] ?? 0;
             elseif ($hour >= 17) { $greeting = 'Good evening'; }
             $first_name = htmlspecialchars(explode(' ', $_SESSION['user_name'])[0]);
             ?>
-            <div class="letters-hero-section">
-                <div class="letters-hero-date"><?php echo $greeting; ?>, <?php echo $first_name; ?></div>
-                <h1 class="letters-hero-title">Patient Portal</h1>
+            <div class="emr-hero">
+                <h1 class="emr-hero-title"><?php echo $greeting; ?>, <?php echo $first_name; ?>. Welcome to your health portal.</h1>
+                <p class="emr-hero-subtitle">View your appointments, medical records, and use the AI symptom checker. &mdash; <?php echo date('l, F j, Y'); ?></p>
             </div>
 
             <?php if (!empty($success_msg)): ?>

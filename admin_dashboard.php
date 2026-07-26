@@ -593,101 +593,57 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
 </head>
 <body>
 
-    <div class="dashboard-container">
-        
-        <!-- Top Navigation -->
-        <header class="top-nav">
-            <a href="?tab=overview" class="nav-brand">
-                <span class="nav-brand-mark">CL</span>
-                <span>CLINICK</span>
-            </a>
-            
-            <div class="nav-tabs-wrapper">
-                <ul class="nav-tabs">
-                    <li>
-                        <a href="?tab=overview" class="nav-link <?php echo $tab === 'overview' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-chart-pie"></i>
-                            <span>Overview</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=users" class="nav-link <?php echo $tab === 'users' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-users-gear"></i>
-                            <span>Users Directory</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=doctors" class="nav-link <?php echo $tab === 'doctors' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-user-doctor"></i>
-                            <span>Doctors</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=patients" class="nav-link <?php echo $tab === 'patients' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-id-card"></i>
-                            <span>Patients</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=reports" class="nav-link <?php echo $tab === 'reports' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-file-invoice-dollar"></i>
-                            <span>Reports</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=monitoring" class="nav-link <?php echo $tab === 'monitoring' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-shield-halved"></i>
-                            <span>Audit & Logs</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=settings" class="nav-link <?php echo $tab === 'settings' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-sliders"></i>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="nav-actions">
-                <div class="nav-user">
-                    <div class="nav-user-avatar">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </div>
-                    <div class="nav-user-details">
-                        <span class="nav-user-name"><?php echo htmlspecialchars($admin_name); ?></span>
-                        <span class="nav-user-role">Administrator</span>
-                    </div>
-                </div>
-                
-                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode" style="margin:0;">
-                    <span class="theme-toggle-thumb"><i class="fa-solid fa-sun"></i></span>
-                </button>
+    <!-- Emergency Screening Banner -->
+    <div class="emr-emergency-bar">
+        Admin Console Active &mdash; CLINICK System Administration & Audit Portal
+    </div>
 
-                <a href="index.php?logout=true" class="btn btn-logout btn-secondary btn-sm" title="Sign Out">
+    <div class="dashboard-container">
+
+        <!-- EMR Top Navigation -->
+        <header class="emr-top-nav">
+            <a href="?tab=overview" class="emr-brand">CLINICK.</a>
+
+            <ul class="emr-nav-tabs">
+                <li><a href="?tab=overview" class="emr-nav-link <?php echo $tab === 'overview' ? 'active' : ''; ?>">Overview</a></li>
+                <li><a href="?tab=users" class="emr-nav-link <?php echo $tab === 'users' ? 'active' : ''; ?>">Users</a></li>
+                <li><a href="?tab=doctors" class="emr-nav-link <?php echo $tab === 'doctors' ? 'active' : ''; ?>">Doctors</a></li>
+                <li><a href="?tab=patients" class="emr-nav-link <?php echo $tab === 'patients' ? 'active' : ''; ?>">Patients</a></li>
+                <li><a href="?tab=reports" class="emr-nav-link <?php echo $tab === 'reports' ? 'active' : ''; ?>">Reports</a></li>
+                <li><a href="?tab=monitoring" class="emr-nav-link <?php echo $tab === 'monitoring' ? 'active' : ''; ?>">Audit & Logs</a></li>
+                <li><a href="?tab=settings" class="emr-nav-link <?php echo $tab === 'settings' ? 'active' : ''; ?>">Settings</a></li>
+            </ul>
+
+            <div class="emr-nav-actions">
+                <span class="emr-nav-bell" title="Notifications"><i class="fa-regular fa-bell"></i></span>
+                <button class="emr-theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                </button>
+                <span class="emr-nav-username"><?php echo strtoupper(htmlspecialchars($admin_name)); ?></span>
+                <a href="index.php?logout=true" class="emr-nav-logout" title="Sign Out">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
             </div>
         </header>
 
-        <!-- Main Workspace -->
-        <main class="main-content">
-            
-            <!-- Hero Section (Letters Clinic Style) -->
-            <div class="letters-hero-section">
-                <div class="letters-hero-date"><?php echo date('l, F j'); ?></div>
-                <h1 class="letters-hero-title">Administrative Console & Security Hub</h1>
+        <!-- Main Admin Workspace -->
+        <main class="emr-main-content">
+
+            <!-- EMR Hero Section -->
+            <div class="emr-hero">
+                <h1 class="emr-hero-title">Administrative console, security audit &amp; system monitoring.</h1>
+                <p class="emr-hero-subtitle">Administrator &mdash; <?php echo date('l, F j, Y'); ?>. All systems are operational.</p>
             </div>
 
             <?php if (!empty($success_msg)): ?>
-                <div class="alert alert-success">
+                <div class="emr-alert emr-alert-success">
                     <i class="fa-solid fa-circle-check"></i>
                     <span><?php echo htmlspecialchars($success_msg); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if (!empty($error_msg)): ?>
-                <div class="alert alert-danger">
+                <div class="emr-alert emr-alert-danger">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <span><?php echo htmlspecialchars($error_msg); ?></span>
                 </div>

@@ -241,223 +241,193 @@ if (!function_exists('get_trend_html')) {
 </head>
 <body>
 
+    <!-- Emergency Screening Banner -->
+    <div class="emr-emergency-bar">
+        Emergency Screening System Active &mdash; Protocol 4-A
+    </div>
+
     <div class="dashboard-container">
-        
-        <!-- Top Navigation -->
-        <header class="top-nav">
-            <a href="?tab=overview" class="nav-brand">
-                <span class="nav-brand-mark">CL</span>
-                <span>CLINICK</span>
-            </a>
-            
-            <div class="nav-tabs-wrapper">
-                <ul class="nav-tabs">
-                    <li>
-                        <a href="?tab=overview" class="nav-link <?php echo $tab === 'overview' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-chart-line"></i>
-                            <span>Overview</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=appointments" class="nav-link <?php echo $tab === 'appointments' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-calendar-check"></i>
-                            <span>Patient Schedule</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=prescribe" class="nav-link <?php echo $tab === 'prescribe' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-file-prescription"></i>
-                            <span>Prescribe Meds</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=patients" class="nav-link <?php echo $tab === 'patients' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-users"></i>
-                            <span>Registered Patients</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="?tab=availability" class="nav-link <?php echo $tab === 'availability' ? 'active' : ''; ?>">
-                            <i class="fa-solid fa-calendar-days"></i>
-                            <span>Work Availability</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="nav-actions">
-                <div class="nav-user">
-                    <div class="nav-user-avatar">
-                        <i class="fa-solid <?php echo $_SESSION['user_role'] === 'Doctor' ? 'fa-user-doctor' : 'fa-user-nurse'; ?>"></i>
-                    </div>
-                    <div class="nav-user-details">
-                        <span class="nav-user-name"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
-                        <span class="nav-user-role"><?php echo htmlspecialchars($_SESSION['user_role']); ?></span>
-                    </div>
-                </div>
-                
-                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode" style="margin:0;">
-                    <span class="theme-toggle-thumb"><i class="fa-solid fa-sun"></i></span>
+
+        <!-- EMR Top Navigation -->
+        <header class="emr-top-nav">
+            <a href="?tab=overview" class="emr-brand">CLINICK.</a>
+
+            <ul class="emr-nav-tabs">
+                <li><a href="?tab=overview" class="emr-nav-link <?php echo $tab === 'overview' ? 'active' : ''; ?>">Overview</a></li>
+                <li><a href="?tab=appointments" class="emr-nav-link <?php echo $tab === 'appointments' ? 'active' : ''; ?>">Schedule</a></li>
+                <li><a href="?tab=prescribe" class="emr-nav-link <?php echo $tab === 'prescribe' ? 'active' : ''; ?>">Prescription</a></li>
+                <li><a href="?tab=patients" class="emr-nav-link <?php echo $tab === 'patients' ? 'active' : ''; ?>">Patients</a></li>
+                <li><a href="?tab=availability" class="emr-nav-link <?php echo $tab === 'availability' ? 'active' : ''; ?>">Availability</a></li>
+            </ul>
+
+            <div class="emr-nav-actions">
+                <span class="emr-nav-bell" title="Notifications"><i class="fa-regular fa-bell"></i></span>
+                <button class="emr-theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
                 </button>
-                
-                <a href="index.php?logout=true" class="btn btn-logout btn-secondary btn-sm" title="Sign Out" style="margin-left: 0.5rem; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; padding: 0;">
+                <span class="emr-nav-username"><?php
+                    $dname = htmlspecialchars($_SESSION['user_name']);
+                    echo (stripos($dname, 'Dr.') === 0) ? strtoupper($dname) : 'DR. ' . strtoupper($dname);
+                ?></span>
+                <a href="index.php?logout=true" class="emr-nav-logout" title="Sign Out">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
             </div>
         </header>
 
-        <!-- Main Dashboard Viewport -->
-        <main class="main-content">
-            
-            <!-- Hero Section (Letters Clinic Style) -->
+        <!-- EMR Main Content -->
+        <main class="emr-main-content">
+
+            <!-- EMR Hero Section -->
             <?php
-            $tab_titles = [
-                'overview' => 'Clinic Overview',
-                'appointments' => 'Patient Schedule & Visits',
-                'prescribe' => 'Prescribe Medication',
-                'patients' => 'Registered Patients Index',
-                'availability' => 'Work Availability Schedule'
+            $tab_heroes = [
+                'overview'     => ['Enhancing clinical precision through data-driven workflows.', 'Clinic overview for ' . date('F j, Y') . '. All staff members are currently on duty.'],
+                'appointments' => ['Patient schedule & consultation queue.', 'Manage appointments, reschedule visits, and update consultation status.'],
+                'prescribe'    => ['Write and manage patient prescriptions.', 'Issue medication orders and review your prescription history.'],
+                'patients'     => ['Registered patient index.', 'View all patients assigned to your care and their clinical profiles.'],
+                'availability' => ['Work availability & scheduling.', 'Set your available dates and manage your clinical calendar.'],
             ];
-            $hero_title = $tab_titles[$tab] ?? 'Clinic Workspace';
+            $hero_data = $tab_heroes[$tab] ?? ['Clinical Dashboard', date('l, F j, Y')];
             ?>
-            <div class="letters-hero-section">
-                <div class="letters-hero-date"><?php echo date('l, F j'); ?></div>
-                <h1 class="letters-hero-title"><?php echo htmlspecialchars($hero_title); ?></h1>
+            <div class="emr-hero">
+                <h1 class="emr-hero-title"><?php echo htmlspecialchars($hero_data[0]); ?></h1>
+                <p class="emr-hero-subtitle"><?php echo htmlspecialchars($hero_data[1]); ?></p>
             </div>
 
             <?php if (!empty($success_msg)): ?>
-                <div class="alert alert-success">
+                <div class="emr-alert emr-alert-success">
                     <i class="fa-solid fa-circle-check"></i>
                     <span><?php echo htmlspecialchars($success_msg); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if (!empty($error_msg)): ?>
-                <div class="alert alert-danger">
+                <div class="emr-alert emr-alert-danger">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <span><?php echo htmlspecialchars($error_msg); ?></span>
                 </div>
             <?php endif; ?>
 
-            <!-- TAB 1: OVERVIEW (Letters Clinic Inspired) -->
+            <!-- TAB 1: OVERVIEW — EMR 2.0 Layout -->
             <?php if ($tab === 'overview'): ?>
                 <?php
                 $staff_on_duty = (int)($db->querySingle("SELECT COUNT(*) FROM users WHERE role IN ('Staff', 'Clinical Staff')") ?? 4);
+                $today_appts_res = $db->query("SELECT a.*, u.name as patient_name FROM appointments a JOIN users u ON a.patient_id = u.id ORDER BY a.appointment_date ASC, a.time_slot ASC LIMIT 8");
+                $rec_presc = $db->query("SELECT p.*, u.name as patient_name FROM prescriptions p JOIN users u ON p.patient_id = u.id ORDER BY p.id DESC LIMIT 4");
                 ?>
-                <div class="letters-dashboard-grid">
-                    <!-- Left Main Card -->
-                    <div class="letters-main-card">
-                        <div class="letters-card-header">
-                            <h2>Today's Appointments</h2>
-                            <a href="?tab=appointments" class="letters-btn-pill">
-                                <i class="fa-solid fa-plus"></i> New Appointment
-                            </a>
-                        </div>
+                <div class="emr-content-grid">
 
-                        <!-- Appointments List -->
-                        <div class="letters-appt-list">
+                    <!-- Left Column: Table + Records -->
+                    <div>
+                        <!-- Today's Appointments Table -->
+                        <div class="emr-section-label">Today's Appointments</div>
+                        <table class="emr-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Patient</th>
+                                    <th>Condition / Reason</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                             <?php
-                            $today_appts_res = $db->query("SELECT a.*, u.name as patient_name FROM appointments a JOIN users u ON a.patient_id = u.id ORDER BY a.appointment_date ASC, a.time_slot ASC LIMIT 4");
                             $has_today_appts = false;
                             while ($app = $today_appts_res->fetchArray(SQLITE3_ASSOC)):
                                 $has_today_appts = true;
                                 $status = $app['status'] ?? 'Scheduled';
-                                $statusClass = 'letters-status-waiting';
-                                if ($status === 'In Progress') $statusClass = 'letters-status-progress';
-                                elseif ($status === 'Completed') $statusClass = 'letters-status-completed';
-                                elseif ($status === 'Scheduled') $statusClass = 'letters-status-upcoming';
+                                $badgeClass = 'emr-badge-scheduled';
+                                if ($status === 'In Progress') $badgeClass = 'emr-badge-inprogress';
+                                elseif ($status === 'Completed') $badgeClass = 'emr-badge-completed';
+                                elseif ($status === 'Cancelled') $badgeClass = 'emr-badge-cancelled';
+                                elseif ($status === 'No-Show') $badgeClass = 'emr-badge-noshow';
                             ?>
-                                <div class="letters-appt-row">
-                                    <div class="letters-appt-time"><?php echo htmlspecialchars($app['time_slot']); ?></div>
-                                    <div class="letters-appt-info">
-                                        <span class="letters-patient-name"><?php echo htmlspecialchars($app['patient_name']); ?></span>
-                                        <span class="letters-visit-reason"><?php echo htmlspecialchars($app['reason'] ?: 'General Consultation & Follow-up'); ?></span>
-                                    </div>
-                                    <div>
-                                        <span class="letters-status-pill <?php echo $statusClass; ?>"><?php echo strtoupper(htmlspecialchars($status)); ?></span>
-                                    </div>
-                                </div>
+                                <tr>
+                                    <td class="emr-time-cell"><?php echo htmlspecialchars($app['time_slot']); ?></td>
+                                    <td class="emr-patient-cell"><?php echo htmlspecialchars($app['patient_name']); ?></td>
+                                    <td class="emr-condition-cell"><?php echo htmlspecialchars($app['reason'] ?: 'General Consultation'); ?></td>
+                                    <td><span class="emr-badge <?php echo $badgeClass; ?>"><?php echo strtoupper($status); ?></span></td>
+                                    <td>
+                                        <div class="emr-btn-actions">
+                                        <?php if ($status === 'Scheduled'): ?>
+                                            <a href="?tab=appointments&action=complete&id=<?php echo $app['id']; ?>" class="emr-btn emr-btn-teal">Check-In</a>
+                                            <a href="?tab=appointments&action=cancel&id=<?php echo $app['id']; ?>" class="emr-btn emr-btn-danger" onclick="return confirm('Cancel this appointment?')">Cancel</a>
+                                        <?php elseif ($status === 'In Progress'): ?>
+                                            <a href="?tab=appointments&action=complete&id=<?php echo $app['id']; ?>" class="emr-btn emr-btn-solid">Complete</a>
+                                        <?php else: ?>
+                                            <span style="font-size:0.72rem;color:#94a3b8;">Locked</span>
+                                        <?php endif; ?>
+                                        </div>
+                                    </td>
+                                </tr>
                             <?php endwhile; ?>
                             <?php if (!$has_today_appts): ?>
-                                <div class="letters-appt-row" style="justify-content: center; text-align: center; color: var(--text-muted);">
-                                    <span>No appointments scheduled for today.</span>
-                                </div>
+                                <tr class="emr-empty-row"><td colspan="5">No appointments scheduled. <a href="?tab=appointments" class="emr-btn" style="margin-left:8px;">View All</a></td></tr>
                             <?php endif; ?>
-                        </div>
+                            </tbody>
+                        </table>
 
                         <!-- Recent Medical Records -->
-                        <div class="letters-records-section">
-                            <div class="letters-records-header">
-                                <h3>Recent Medical Records</h3>
-                                <a href="?tab=patients" class="letters-view-all">View All</a>
+                        <div class="emr-section-label">Recent Medical Records</div>
+                        <div class="emr-records-grid">
+                            <?php
+                            $has_rec = false;
+                            while ($pr = $rec_presc->fetchArray(SQLITE3_ASSOC)):
+                                $has_rec = true;
+                                $recDate = date('M j, Y', strtotime($pr['created_at'] ?? 'now'));
+                            ?>
+                            <div class="emr-record-card">
+                                <div class="emr-record-date"><?php echo $recDate; ?></div>
+                                <div class="emr-record-title">Prescription: <?php echo htmlspecialchars($pr['medication']); ?></div>
+                                <div class="emr-record-desc">Patient: <?php echo htmlspecialchars($pr['patient_name']); ?>. Status: <?php echo htmlspecialchars($pr['dosage']); ?> &mdash; <?php echo htmlspecialchars($pr['frequency']); ?>.</div>
                             </div>
-
-                            <div class="letters-records-list">
-                                <?php
-                                $rec_presc = $db->query("SELECT p.*, u.name as patient_name FROM prescriptions p JOIN users u ON p.patient_id = u.id ORDER BY p.id DESC LIMIT 3");
-                                $has_rec = false;
-                                while ($pr = $rec_presc->fetchArray(SQLITE3_ASSOC)):
-                                    $has_rec = true;
-                                    $timeAgo = date('M j', strtotime($pr['created_at'] ?? 'now'));
-                                ?>
-                                    <div class="letters-record-item">
-                                        <span class="letters-record-title">Prescription: <?php echo htmlspecialchars($pr['medication']); ?> (<?php echo htmlspecialchars($pr['dosage']); ?>)</span>
-                                        <span class="letters-record-patient"><?php echo htmlspecialchars($pr['patient_name']); ?></span>
-                                        <span class="letters-record-time"><?php echo $timeAgo; ?></span>
-                                    </div>
-                                <?php endwhile; ?>
-                                <?php if (!$has_rec): ?>
-                                    <div class="letters-record-item" style="color: var(--text-muted);">
-                                        <span>No recent prescription records found.</span>
-                                    </div>
-                                <?php endif; ?>
+                            <?php endwhile; ?>
+                            <?php if (!$has_rec): ?>
+                            <div class="emr-record-card" style="grid-column:1/-1;">
+                                <div class="emr-record-desc" style="color:#94a3b8;">No recent prescription records found.</div>
                             </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
-                    <!-- Right Utility Column -->
-                    <div class="letters-side-column">
-                        <!-- Daily Consultations Metric -->
-                        <div class="letters-metric-card">
-                            <span class="letters-metric-label">Daily Consultations</span>
-                            <div class="letters-metric-value"><?php echo $today_count; ?></div>
-                            <div class="letters-progress-bar">
-                                <div class="letters-progress-fill" style="width: <?php echo min(100, max(20, $today_count * 15)); ?>%;"></div>
-                            </div>
+                    <!-- Right Column: Clinic Metrics -->
+                    <div class="emr-metrics-col">
+                        <div class="emr-section-label">Clinic Metrics</div>
+
+                        <div class="emr-metric-item">
+                            <div class="emr-metric-number"><?php echo str_pad($today_count, 2, '0', STR_PAD_LEFT); ?></div>
+                            <div class="emr-metric-label">Daily Consultations</div>
                         </div>
 
-                        <!-- Efficiency Gain Metric -->
-                        <div class="letters-metric-card">
-                            <span class="letters-metric-label">Efficiency Gain</span>
-                            <div class="letters-metric-value">3.2x</div>
-                            <span style="font-size: 0.78rem; color: var(--text-muted);">Compared to manual entry</span>
+                        <div class="emr-metric-item">
+                            <div class="emr-metric-number">+14%</div>
+                            <div class="emr-metric-label">Efficiency Gain</div>
                         </div>
 
-                        <!-- Staff On Duty Pill Card -->
-                        <div class="letters-dark-card">
-                            <span class="letters-dark-label">Staff On Duty</span>
-                            <div class="letters-dark-value"><?php echo $staff_on_duty; ?></div>
-                            <div class="letters-avatar-stack">
-                                <div class="letters-avatar-pill">DR</div>
-                                <div class="letters-avatar-pill">NS</div>
-                                <div class="letters-avatar-pill">ST</div>
-                                <div class="letters-avatar-pill letters-avatar-more">+<?php echo max(1, $staff_on_duty - 3); ?></div>
-                            </div>
+                        <div class="emr-metric-item">
+                            <div class="emr-metric-number"><?php echo str_pad($staff_on_duty, 2, '0', STR_PAD_LEFT); ?></div>
+                            <div class="emr-metric-label">Staff on Duty</div>
                         </div>
 
-                        <!-- Action Button -->
-                        <a href="admin_dashboard.php?tab=reports" class="letters-btn-report">
-                            Generate Daily Report
-                        </a>
+                        <a href="?tab=appointments" class="emr-cta-btn">Generate Daily Report</a>
                     </div>
+
                 </div>
             <?php elseif ($tab === 'appointments'): ?>
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fa-solid fa-calendar-days"></i> Patient Schedule & Actions</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive"><table class="data-table">
+                <div class="emr-section-label">Patient Schedule &amp; Actions</div>
+                <div style="overflow-x:auto;">
+                <table class="emr-table">
+                    <thead><tr>
+                        <th>Patient</th>
+                        <th>Queue</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th style="text-align:right;">Actions</th>
+                    </tr></thead>
+                    <tbody>
                                 <thead>
                                     <tr>
                                         <th>Patient Name</th>
@@ -477,69 +447,50 @@ if (!function_exists('get_trend_html')) {
                                     while ($app = $res->fetchArray(SQLITE3_ASSOC)):
                                         $has_rows = true;
                                     ?>
-                                        <tr>
-                                            <td><strong><?php echo htmlspecialchars($app['patient_name']); ?></strong></td>
-                                            <td>
-                                                <?php if (!empty($app['queue_number'])): ?>
-                                                    <span style="font-family: monospace; font-weight: 700; color: var(--primary);">Q-<?php echo $app['queue_number']; ?></span>
-                                                <?php else: ?>
-                                                    <span style="color: var(--text-muted);">-</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?php echo htmlspecialchars($app['appointment_date']); ?></td>
-                                            <td><?php echo htmlspecialchars($app['time_slot']); ?></td>
-                                            <td><?php echo htmlspecialchars($app['reason'] ?: 'Routine checkup'); ?></td>
-                                            <td>
-                                                <span class="badge badge-<?php echo strtolower($app['status']); ?>">
-                                                    <?php echo htmlspecialchars($app['status']); ?>
-                                                </span>
-                                            </td>
-                                            <td style="text-align: right;">
-                                                <?php if ($app['status'] === 'Scheduled'): ?>
-                                                    <div style="display: inline-flex; gap: 0.35rem; justify-content: flex-end;">
-                                                        <button type="button" 
-                                                                class="btn-sm btn-outline" 
-                                                                style="padding: 0.4rem 0.75rem; font-size: 0.85rem; border: 1px solid var(--primary-light); color: var(--primary); background: transparent; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; gap: 0.25rem;"
-                                                                onclick="openRescheduleModal(<?php echo $app['id']; ?>, '<?php echo $app['appointment_date']; ?>', '<?php echo $app['time_slot']; ?>')">
-                                                            <i class="fa-solid fa-clock-rotate-left"></i> Reschedule
-                                                        </button>
-                                                        <a href="?tab=appointments&action=complete&id=<?php echo $app['id']; ?>" class="btn-sm btn-success" style="display: inline-flex; align-items: center; gap: 0.25rem;">
-                                                            <i class="fa-solid fa-check"></i> Complete
-                                                        </a>
-                                                        <a href="?tab=appointments&action=cancel&id=<?php echo $app['id']; ?>" class="btn-sm btn-danger" style="display: inline-flex; align-items: center; gap: 0.25rem;">
-                                                            <i class="fa-solid fa-xmark"></i> Cancel
-                                                        </a>
-                                                    </div>
-                                                <?php else: ?>
-                                                    <span style="color: var(--text-muted); font-size: 0.85rem;">Completed/Locked</span>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endwhile; ?>
-                                    <?php if (!$has_rows): ?>
-                                        <tr>
-                                            <td colspan="7" class="table-placeholder">
-                                                <i class="fa-solid fa-calendar-xmark" style="font-size: 2.5rem; margin-bottom: 0.5rem; display: block; color: var(--border-color);"></i>
-                                                No appointments scheduled in the clinic.
-                                            </td>
-                                        </tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
+                                    <tr>
+                                        <td class="emr-patient-cell"><strong><?php echo htmlspecialchars($app['patient_name']); ?></strong></td>
+                                        <td><?php if (!empty($app['queue_number'])): ?><span style="font-weight:700;color:#0f766e;">Q-<?php echo $app['queue_number']; ?></span><?php else: ?><span style="color:#94a3b8;">—</span><?php endif; ?></td>
+                                        <td><?php echo htmlspecialchars($app['appointment_date']); ?></td>
+                                        <td class="emr-time-cell"><?php echo htmlspecialchars($app['time_slot']); ?></td>
+                                        <td class="emr-condition-cell"><?php echo htmlspecialchars($app['reason'] ?: 'Routine checkup'); ?></td>
+                                        <td>
+                                            <?php
+                                            $sc = $app['status'];
+                                            $bc2 = 'emr-badge-scheduled';
+                                            if ($sc==='In Progress') $bc2='emr-badge-inprogress';
+                                            elseif ($sc==='Completed') $bc2='emr-badge-completed';
+                                            elseif ($sc==='Cancelled') $bc2='emr-badge-cancelled';
+                                            elseif ($sc==='No-Show') $bc2='emr-badge-noshow';
+                                            ?>
+                                            <span class="emr-badge <?php echo $bc2; ?>"><?php echo strtoupper(htmlspecialchars($app['status'])); ?></span>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <?php if ($app['status'] === 'Scheduled'): ?>
+                                            <div class="emr-btn-actions" style="justify-content:flex-end;">
+                                                <button type="button" class="emr-btn" onclick="openRescheduleModal(<?php echo $app['id']; ?>, '<?php echo $app['appointment_date']; ?>', '<?php echo $app['time_slot']; ?>')">Reschedule</button>
+                                                <a href="?tab=appointments&action=complete&id=<?php echo $app['id']; ?>" class="emr-btn emr-btn-teal">Complete</a>
+                                                <a href="?tab=appointments&action=cancel&id=<?php echo $app['id']; ?>" class="emr-btn emr-btn-danger" onclick="return confirm('Cancel this appointment?')">Cancel</a>
+                                            </div>
+                                            <?php else: ?>
+                                                <span style="font-size:0.72rem;color:#94a3b8;">Locked</span>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                                <?php if (!$has_rows): ?>
+                                    <tr class="emr-empty-row"><td colspan="7">No appointments scheduled in the clinic.</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
                         </div>
-                    </div>
-                </div>
 
             <!-- TAB 3: PRESCRIBE -->
             <?php elseif ($tab === 'prescribe'): ?>
-                <div class="dashboard-block-grid">
-                    
+                <div class="emr-tab-grid">
+
                     <!-- Prescribe Form -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2><i class="fa-solid fa-file-prescription"></i> Write New Prescription</h2>
-                        </div>
-                        <div class="card-body">
+                    <div class="emr-form-section">
+                        <h3>Write New Prescription</h3>
                             <?php if (empty($patients)): ?>
                                 <p style="font-size: 0.95rem; color: var(--text-muted);">No patients are registered in the database to prescribe medication to.</p>
                             <?php else: ?>
@@ -582,11 +533,9 @@ if (!function_exists('get_trend_html')) {
                     </div>
 
                     <!-- Prescriptions History -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2><i class="fa-solid fa-history"></i> Prescribed Log</h2>
-                        </div>
-                        <div class="card-body scrollable-y">
+                    <div class="emr-form-section">
+                        <h3>Prescribed Log</h3>
+                        <div class="scrollable-y" style="max-height:480px;overflow-y:auto;">
                             <?php
                             $query = "SELECT p.*, u.name as patient_name FROM prescriptions p JOIN users u ON p.patient_id = u.id WHERE p.doctor_id = :doctor_id ORDER BY p.created_at DESC";
                             $stmt_presc_hist = $db->prepare($query);
@@ -617,20 +566,15 @@ if (!function_exists('get_trend_html')) {
 
             <!-- TAB 4: PATIENTS -->
             <?php elseif ($tab === 'patients'): ?>
-                <div class="card" style="max-width: 800px;">
-                    <div class="card-header">
-                        <h2><i class="fa-solid fa-users"></i> Registered Patients Index</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive"><table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Patient Name</th>
-                                        <th>Email</th>
-                                        <th>Registered Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                <div class="emr-section-label">Registered Patients Index</div>
+                <div style="overflow-x:auto;">
+                <table class="emr-table">
+                    <thead><tr>
+                        <th>Patient Name</th>
+                        <th>Email</th>
+                        <th>Registered Date</th>
+                    </tr></thead>
+                    <tbody>
                                     <?php if (empty($patients)): ?>
                                         <tr>
                                             <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 2rem;">
@@ -649,12 +593,10 @@ if (!function_exists('get_trend_html')) {
                                                 <td><?php echo htmlspecialchars($pat['email']); ?></td>
                                                 <td><?php echo date('M d, Y (h:i A)', strtotime($created_at)); ?></td>
                                             </tr>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    </tbody>
+                </table>
                 </div>
 
             <!-- TAB 5: AVAILABILITY -->
