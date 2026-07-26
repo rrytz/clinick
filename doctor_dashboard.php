@@ -1350,22 +1350,6 @@ if (!function_exists('get_trend_html')) {
     }
     
     const sbBtn = document.getElementById('sidebar-toggle-btn'); if (sbBtn) { sbBtn.addEventListener('click', () => { document.body.classList.toggle('sidebar-collapsed'); }); }
-
-    // Dark mode toggle
-    const themeToggle = document.getElementById('theme-toggle');
-    const icon = themeToggle.querySelector('i');
-    function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('clinick-theme', theme);
-        icon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-    }
-    themeToggle.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        applyTheme(current === 'dark' ? 'light' : 'dark');
-    });
-    const savedTheme = localStorage.getItem('clinick-theme') || 'light';
-    if (savedTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-    icon.className = savedTheme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
     </script>
 <?php include 'chatbot-widget.php'; ?>
 </body>

@@ -72,6 +72,63 @@
     --transition-smooth: all 0.2s ease;
 }
 
+/* ─── Global Dark Theme Tokens ────────────────────────────── */
+html[data-theme="dark"] {
+    --bg-slate: #0f172a;
+    --bg-subtle: #1e293b;
+    --card-bg: #1e293b;
+    --nav-bg: #0f172a;
+
+    --text-main: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --text-placeholder: #64748b;
+
+    --border-color: #334155;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] body {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .main-content {
+    background-color: #0f172a !important;
+}
+
+html[data-theme="dark"] .dashboard-header {
+    background-color: #0f172a !important;
+    border-bottom-color: #334155 !important;
+}
+
+html[data-theme="dark"] .letters-hero-section {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .letters-hero-title {
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .letters-hero-date {
+    color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .letters-main-card,
+html[data-theme="dark"] .letters-metric-card,
+html[data-theme="dark"] .letters-reminder-item {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .letters-appt-row {
+    border-bottom-color: #334155 !important;
+}
+
 /* ─── Base Resets & Fonts ─────────────────────────────────── */
 * {
     margin: 0;
