@@ -477,8 +477,7 @@ $presc_count = $stmt_presc->execute()->fetchArray(SQLITE3_ASSOC)['count'] ?? 0;
                         <span class="nav-user-role">Patient Portal</span>
                     </div>
                 </div>
-                
-                <a href="index.php?logout=true" class="btn btn-logout btn-secondary btn-sm" title="Sign Out">
+                          <a href="index.php?logout=true" class="btn btn-logout btn-secondary btn-sm" title="Sign Out">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
             </div>
@@ -486,76 +485,18 @@ $presc_count = $stmt_presc->execute()->fetchArray(SQLITE3_ASSOC)['count'] ?? 0;
 
         <!-- Main Dashboard Viewport -->
         <main class="main-content">
-            
-            <!-- Top Bar -->
-            <header class="top-bar">
-                <div class="welcome-section">
-                    <h1>Hello, <?php echo htmlspecialchars(explode(' ', $_SESSION['user_name'])[0]); ?></h1>
-                    <p>Welcome to your secure patient workspace.</p>
-                </div>
-                <div class="top-bar-actions">
-                    <!-- Notification Bell Dropdown -->
-                    <div class="notification-bell-container">
-                        <button class="bell-btn" onclick="toggleNotificationDropdown(event)">
-                            <i class="fa-solid fa-bell"></i>
-                            <?php if ($upcoming_appointments_count > 0): ?>
-                                <span class="bell-badge"><?php echo $upcoming_appointments_count; ?></span>
-                            <?php endif; ?>
-                        </button>
-                        <div class="notification-dropdown" id="notificationDropdown">
-                            <div class="notification-dropdown-header">
-                                <span>Notifications &amp; Reminders</span>
-                                <span class="badge badge-success"><?php echo $upcoming_appointments_count; ?> Active</span>
-                            </div>
-                            <div class="notification-dropdown-body">
-                                <?php
-                                // Fetch scheduled reminders for the patient
-                                $res_bell = $db->prepare("
-                                    SELECT a.appointment_date, a.time_slot, u.name as doctor_name, r.reminder_offset 
-                                    FROM appointments a 
-                                    JOIN users u ON a.doctor_id = u.id 
-                                    LEFT JOIN reminders r ON a.id = r.appointment_id
-                                    WHERE a.patient_id = :patient_id AND a.status = 'Scheduled'
-                                    ORDER BY a.appointment_date ASC, a.time_slot ASC
-                                ");
-                                $res_bell->bindValue(':patient_id', $patient_id, SQLITE3_INTEGER);
-                                $bell_result = $res_bell->execute();
-                                $has_bell_items = false;
-                                while ($item = $bell_result->fetchArray(SQLITE3_ASSOC)):
-                                    $has_bell_items = true;
-                                    $item_doc = stripos($item['doctor_name'], 'Dr.') === 0 ? $item['doctor_name'] : 'Dr. ' . $item['doctor_name'];
-                                    $offset = !empty($item['reminder_offset']) && $item['reminder_offset'] !== 'none' ? 'Remind: ' . $item['reminder_offset'] : 'No offset reminder';
-                                ?>
-                                    <div class="notification-item" style="padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.8rem; display: flex; gap: 0.75rem; transition: background 0.2s;">
-                                        <div style="background: rgba(15, 118, 110, 0.1); color: var(--primary); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                            <i class="fa-solid fa-clock"></i>
-                                        </div>
-                                        <div>
-                                            <strong style="display: block; font-size: 0.85rem; color: var(--text-main);">Upcoming Appointment</strong>
-                                            <span style="color: var(--text-muted); display: block; margin-top: 0.15rem;"><?php echo htmlspecialchars($item_doc); ?> on <?php echo htmlspecialchars($item['appointment_date']); ?> at <?php echo htmlspecialchars($item['time_slot']); ?></span>
-                                            <span style="font-size: 0.7rem; color: var(--primary); display: block; margin-top: 0.25rem; font-weight: 600;"><i class="fa-solid fa-bell"></i> <?php echo htmlspecialchars($offset); ?></span>
-                                        </div>
-                                    </div>
-                                <?php endwhile; ?>
-                                <?php if (!$has_bell_items): ?>
-                                    <p style="padding: 2rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">No active upcoming appointment notifications.</p>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="date-badge">
-                        <i class="fa-regular fa-calendar"></i>
-                        <span><?php echo date('l, M j, Y'); ?></span>
-                    </div>
-
-                    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
-                        <span class="theme-toggle-thumb">
-                            <i class="fa-solid fa-sun"></i>
-                        </span>
-                    </button>
-                </div>
-            </header>
+            <!-- Hero Section (Letters Clinic Patient Portal Style) -->
+            <?php
+            $hour = (int)date('H');
+            $greeting = 'Good morning';
+            if ($hour >= 12 && $hour < 17) { $greeting = 'Good afternoon'; }
+            elseif ($hour >= 17) { $greeting = 'Good evening'; }
+            $first_name = htmlspecialchars(explode(' ', $_SESSION['user_name'])[0]);
+            ?>
+            <div class="letters-hero-section">
+                <div class="letters-hero-date"><?php echo $greeting; ?>, <?php echo $first_name; ?></div>
+                <h1 class="letters-hero-title">Patient Portal</h1>
+            </div>
 
             <?php if (!empty($success_msg)): ?>
                 <div class="alert alert-success">
@@ -571,14 +512,14 @@ $presc_count = $stmt_presc->execute()->fetchArray(SQLITE3_ASSOC)['count'] ?? 0;
                 </div>
             <?php endif; ?>
 
-            <!-- TAB 1: OVERVIEW -->
+            <!-- TAB 1: OVERVIEW (Letters Clinic Inspired) -->
             <?php if ($tab === 'overview'): ?>
                 <?php
                 // Fetch next upcoming approved/scheduled appointment
-                $stmt_next = $db->prepare("SELECT a.*, u.name as doctor_name FROM appointments a JOIN users u ON a.doctor_id = u.id WHERE a.patient_id = :patient_id AND a.status = 'Scheduled' AND a.appointment_date >= :today ORDER BY a.appointment_date ASC, a.time_slot ASC LIMIT 1");
+                $stmt_next = $db->prepare("SELECT a.*, u.name as doctor_name FROM appointments a JOIN users u ON a.doctor_id = u.id WHERE a.patient_id = :patient_id AND a.status = 'Scheduled' AND a.appointment_date >= :today ORDER BY a.appointment_date ASC, a.time_slot ASC LIMIT 3");
                 $stmt_next->bindValue(':patient_id', $patient_id, SQLITE3_INTEGER);
                 $stmt_next->bindValue(':today', date('Y-m-d'), SQLITE3_TEXT);
-                $next_appt = $stmt_next->execute()->fetchArray(SQLITE3_ASSOC);
+                $next_appts_res = $stmt_next->execute();
 
                 // Fetch today's queue position
                 $today_date = date('Y-m-d');
@@ -597,313 +538,79 @@ $presc_count = $stmt_presc->execute()->fetchArray(SQLITE3_ASSOC)['count'] ?? 0;
                     $patients_ahead = $ahead_res['count'] ?? 0;
                 }
 
-                // Fetch latest symptoms prediction to map to interactive body hotspots
+                // Fetch primary assigned doctor
+                $primary_doc = $db->querySingle("SELECT u.name FROM appointments a JOIN users u ON a.doctor_id = u.id WHERE a.patient_id = " . (int)$patient_id . " ORDER BY a.id DESC LIMIT 1");
+                if (!$primary_doc) { $primary_doc = "Dr. Aris Thorne"; }
+                if (stripos($primary_doc, 'Dr.') !== 0) { $primary_doc = 'Dr. ' . $primary_doc; }
+
+                // Fetch latest symptoms assessment
                 $stmt_sym = $db->prepare("SELECT * FROM symptoms WHERE patient_id = :patient_id ORDER BY created_at DESC LIMIT 1");
                 $stmt_sym->bindValue(':patient_id', $patient_id, SQLITE3_INTEGER);
                 $latest_symptom = $stmt_sym->execute()->fetchArray(SQLITE3_ASSOC);
-
-                $active_hotspot = 'knee'; // Default
-                $condition_desc = "Sprain and strain of knee: Tear of anterior cruciate ligament";
-                $condition_code = "[S83.53]";
-                $condition_title = "Right knee";
-                $meds_to_show = [
-                    ['name' => 'Knee orthosis', 'desc' => 'Fixing device', 'icon' => 'fa-wheelchair', 'price' => '$120.00'],
-                    ['name' => 'Aceclofenac', 'desc' => 'Tablets - 100mg', 'icon' => 'fa-pills', 'price' => '$12.50'],
-                    ['name' => 'Diclofenac', 'desc' => 'Ointment - 2%', 'icon' => 'fa-prescription-bottle', 'price' => '$8.20'],
-                    ['name' => 'Heparin sodium', 'desc' => 'Gel - 1.5%', 'icon' => 'fa-pump-medical', 'price' => '$15.90']
-                ];
-
-                if ($latest_symptom) {
-                    $sym_text = strtolower($latest_symptom['symptoms_entered'] . ' ' . $latest_symptom['predicted_condition']);
-                    if (strpos($sym_text, 'head') !== false || strpos($sym_text, 'migraine') !== false || strpos($sym_text, 'fever') !== false || strpos($sym_text, 'dizzy') !== false) {
-                        $active_hotspot = 'head';
-                        $condition_title = "Cranial / Head";
-                        $condition_code = "[G43.90]";
-                        $condition_desc = "Migraine, unspecified: Without aura, intractable";
-                        $meds_to_show = [
-                            ['name' => 'Sumatriptan', 'desc' => 'Tablets - 50mg', 'icon' => 'fa-pills', 'price' => '$24.00'],
-                            ['name' => 'Paracetamol', 'desc' => 'Tablets - 500mg', 'icon' => 'fa-pills', 'price' => '$3.50'],
-                            ['name' => 'Ibuprofen', 'desc' => 'Capsules - 400mg', 'icon' => 'fa-pills', 'price' => '$5.10'],
-                            ['name' => 'Menthol Patch', 'desc' => 'Cooling patch', 'icon' => 'fa-sticky-note', 'price' => '$7.80']
-                        ];
-                    } elseif (strpos($sym_text, 'chest') !== false || strpos($sym_text, 'breath') !== false || strpos($sym_text, 'cough') !== false) {
-                        $active_hotspot = 'chest';
-                        $condition_title = "Thoracic / Chest";
-                        $condition_code = "[R07.9]";
-                        $condition_desc = "Chest pain, unspecified: Respiratory tract congestion";
-                        $meds_to_show = [
-                            ['name' => 'Albuterol', 'desc' => 'Inhaler - 90mcg', 'icon' => 'fa-wind', 'price' => '$45.00'],
-                            ['name' => 'Guaifenesin', 'desc' => 'Syrup - 100ml', 'icon' => 'fa-prescription-bottle', 'price' => '$9.50'],
-                            ['name' => 'Amoxicillin', 'desc' => 'Capsules - 500mg', 'icon' => 'fa-pills', 'price' => '$14.20'],
-                            ['name' => 'Cough lozenges', 'desc' => 'Soothing drops', 'icon' => 'fa-candy-cane', 'price' => '$4.00']
-                        ];
-                    } elseif (strpos($sym_text, 'stomach') !== false || strpos($sym_text, 'abdominal') !== false || strpos($sym_text, 'nausea') !== false) {
-                        $active_hotspot = 'abdomen';
-                        $condition_title = "Abdominal / Stomach";
-                        $condition_code = "[K30]";
-                        $condition_desc = "Dyspepsia: Gastric hyperacidity and stomach distress";
-                        $meds_to_show = [
-                            ['name' => 'Omeprazole', 'desc' => 'Capsules - 20mg', 'icon' => 'fa-pills', 'price' => '$11.00'],
-                            ['name' => 'Antacid', 'desc' => 'Chewable - 500mg', 'icon' => 'fa-pills', 'price' => '$4.50'],
-                            ['name' => 'Metoclopramide', 'desc' => 'Tablets - 10mg', 'icon' => 'fa-pills', 'price' => '$8.90'],
-                            ['name' => 'Oral Rehydration', 'desc' => 'Electrolyte powder', 'icon' => 'fa-box-tissue', 'price' => '$6.00']
-                        ];
-                    } elseif (strpos($sym_text, 'shoulder') !== false || strpos($sym_text, 'arm') !== false) {
-                        $active_hotspot = 'shoulder';
-                        $condition_title = "Musculoskeletal / Shoulder";
-                        $condition_code = "[M75.8]";
-                        $condition_desc = "Other shoulder lesions: Rotator cuff strain or inflammation";
-                        $meds_to_show = [
-                            ['name' => 'Shoulder brace', 'desc' => 'Support sleeve', 'icon' => 'fa-wheelchair', 'price' => '$38.00'],
-                            ['name' => 'Naproxen', 'desc' => 'Tablets - 220mg', 'icon' => 'fa-pills', 'price' => '$9.80'],
-                            ['name' => 'Methyl Salicylate', 'desc' => 'Analgesic cream', 'icon' => 'fa-prescription-bottle', 'price' => '$7.20'],
-                            ['name' => 'Cold pack', 'desc' => 'Reusable gel pack', 'icon' => 'fa-snowflake', 'price' => '$12.00']
-                        ];
-                    }
-                }
                 ?>
                 
-                <div class="overview-saas-layout">
-                    
-                    <!-- LEFT COLUMN: Diagnostic Results & Treatment Plan -->
+                <div class="letters-dashboard-grid">
+                    <!-- Left Stacked Cards -->
                     <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                         
-
-                        <!-- Live Queue Tracker Widget -->
-                        <div class="card card-body" style="background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); color: #ffffff; border: none; box-shadow: 0 10px 25px rgba(15, 118, 110, 0.25);">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <span style="display: inline-block; width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80;"></span>
-                                    <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.9);">Live Queue Tracker</span>
-                                </div>
-                                <span style="font-size: 0.65rem; background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 4px; color: #ffffff; font-weight: 600;">Today's Visit</span>
+                        <!-- Upcoming Appointments Card -->
+                        <div class="letters-main-card">
+                            <div class="letters-card-header">
+                                <h2>Upcoming Appointments</h2>
+                                <a href="?tab=appointments" class="letters-btn-pill">
+                                    <i class="fa-solid fa-plus"></i> Book New
+                                </a>
                             </div>
 
+                            <div class="letters-appt-list">
+                                <?php
+                                $has_appts = false;
+                                while ($app = $next_appts_res->fetchArray(SQLITE3_ASSOC)):
+                                    $has_appts = true;
+                                    $dt = strtotime($app['appointment_date']);
+                                    $dayNum = date('d', $dt);
+                                    $monthStr = date('M', $dt);
+                                    $docName = stripos($app['doctor_name'], 'Dr.') === 0 ? $app['doctor_name'] : 'Dr. ' . $app['doctor_name'];
+                                    $status = $app['status'] ?? 'Scheduled';
+                                    $statusClass = 'letters-status-upcoming';
+                                    if ($status === 'In Progress') $statusClass = 'letters-status-progress';
+                                    elseif ($status === 'Scheduled') $statusClass = 'letters-status-completed';
+                                ?>
+                                    <div class="letters-appt-row">
+                                        <div class="letters-date-block">
+                                            <span class="letters-date-day"><?php echo $dayNum; ?></span>
+                                            <span class="letters-date-month"><?php echo strtoupper($monthStr); ?></span>
+                                        </div>
+                                        <div class="letters-appt-info">
+                                            <span class="letters-patient-name"><?php echo htmlspecialchars($app['reason'] ?: 'Routine Consultation'); ?></span>
+                                            <span class="letters-visit-reason"><?php echo htmlspecialchars($docName); ?> • <?php echo htmlspecialchars($app['time_slot']); ?></span>
+                                        </div>
+                                        <div>
+                                            <span class="letters-status-pill <?php echo $statusClass; ?>"><?php echo strtoupper(htmlspecialchars($status === 'Scheduled' ? 'CONFIRMED' : $status)); ?></span>
+                                        </div>
+                                    </div>
+                                <?php endwhile;
+                                if (!$has_appts): ?>
+                                    <div class="letters-appt-row" style="justify-content: center; text-align: center; color: var(--text-muted);">
+                                        <span>No upcoming appointments scheduled.</span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Live Queue Tracker Notification Pill -->
                             <?php if (!empty($today_appt)): ?>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; align-items: center; background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; backdrop-filter: blur(4px);">
-                                <div>
-                                    <span style="font-size: 0.65rem; opacity: 0.8; display: block; text-transform: uppercase;">Your Queue No.</span>
-                                    <strong style="font-size: 1.5rem; font-family: monospace; color: #5eead4; line-height: 1.2;">Q-<?php echo $today_appt['queue_number'] ?? '1'; ?></strong>
+                            <div style="background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); color: #ffffff; padding: 1.15rem; border-radius: 1rem; margin-top: 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #5eead4;">Live Queue Position Today</span>
+                                    <span style="font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 9999px;">Q-<?php echo $today_appt['queue_number']; ?></span>
                                 </div>
-                                <div>
-                                    <span style="font-size: 0.65rem; opacity: 0.8; display: block; text-transform: uppercase;">Patients Ahead</span>
-                                    <strong style="font-size: 1.25rem; color: #ffffff; line-height: 1.2;"><?php echo $patients_ahead; ?> <?php echo $patients_ahead === 1 ? 'patient' : 'patients'; ?></strong>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
+                                    <span>Patients Ahead: <strong><?php echo $patients_ahead; ?></strong></span>
+                                    <span>Est. Wait: <strong><?php echo $patients_ahead > 0 ? ($patients_ahead * 15) . ' mins' : 'You are next!'; ?></strong></span>
                                 </div>
-                                <div>
-                                    <span style="font-size: 0.65rem; opacity: 0.8; display: block; text-transform: uppercase;">Estimated Wait</span>
-                                    <strong style="font-size: 1rem; color: #fef08a; line-height: 1.2;"><?php echo $patients_ahead > 0 ? ($patients_ahead * 15) . ' mins' : 'You are next!'; ?></strong>
-                                </div>
-                            </div>
-                            <div style="margin-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; opacity: 0.9;">
-                                <span><i class="fa-solid fa-user-doctor" style="margin-right: 4px;"></i> <?php echo htmlspecialchars($today_appt['doctor_name']); ?></span>
-                                <span><i class="fa-solid fa-clock" style="margin-right: 4px;"></i> Slot: <?php echo htmlspecialchars($today_appt['time_slot']); ?></span>
-                            </div>
-                            <?php else: ?>
-                            <div style="background: rgba(255,255,255,0.1); padding: 0.85rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <strong style="font-size: 0.8125rem; display: block;">No Appointments Scheduled for Today</strong>
-                                    <span style="font-size: 0.7rem; opacity: 0.85;">Book a visit to track your queue position in real-time.</span>
-                                </div>
-                                <a href="?tab=appointments" class="btn-sm" style="background: #ffffff; color: #0f766e; font-weight: 700; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem;">Book Now</a>
                             </div>
                             <?php endif; ?>
                         </div>
-                        <!-- Diagnostic Results Widget -->
-                        <div class="card card-body">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <h3 style="font-size: 0.9375rem; font-weight: 700; color: var(--text-main); margin: 0;">Diagnostic results</h3>
-                                <a href="?tab=records" class="form-link" style="font-size: 0.75rem; font-weight: 600;">All records &rsaquo;</a>
-                            </div>
-                            
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
-                                <div class="config-card" style="padding: 0.75rem;">
-                                    <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
-                                        <i class="fa-solid fa-stethoscope" style="color: var(--primary);"></i> Consultations
-                                    </span>
-                                    <strong style="font-size: 0.8125rem; display: block; margin-top: var(--space-2); color: var(--text-main);">Routine Checkup</strong>
-                                </div>
-                                <div class="config-card" style="padding: 0.75rem;">
-                                    <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
-                                        <i class="fa-solid fa-file-invoice" style="color: var(--secondary);"></i> Symptoms Entered
-                                    </span>
-                                    <strong style="font-size: 0.8125rem; display: block; margin-top: var(--space-2); color: var(--text-main); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" title="<?php echo $latest_symptom ? htmlspecialchars($latest_symptom['symptoms_entered']) : 'No records'; ?>">
-                                        <?php echo $latest_symptom ? htmlspecialchars($latest_symptom['symptoms_entered']) : 'No records'; ?>
-                                    </strong>
-                                </div>
-                            </div>
-                            
-                            <div class="alert alert-success" style="border-left: 4px solid var(--primary);">
-                                <div>
-                                    <span style="font-size: 0.65rem; color: var(--primary); font-weight: 700; text-transform: uppercase; display: block;">Latest Diagnostic Risk Assessment</span>
-                                    <strong style="font-size: 0.8125rem; color: var(--text-main); display: block; margin-top: 2px;">
-                                        <?php echo $latest_symptom ? htmlspecialchars($latest_symptom['predicted_condition']) : 'Clear Diagnosis'; ?>
-                                    </strong>
-                                </div>
-                                <span class="diagnosis-badge"><?php echo $latest_symptom ? round($latest_symptom['probability_score'] * 100) . '%' : '0%'; ?> Prob.</span>
-                            </div>
-                        </div>
-
-                        <!-- Treatment Plan Widget (Timeline) -->
-                        <div class="card card-body">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h3 style="font-size: 0.9375rem; font-weight: 700; color: var(--text-main); margin: 0;">Treatment plan</h3>
-                                <a href="?tab=appointments" class="form-link" style="font-size: 0.75rem; font-weight: 600;">Full plan &rsaquo;</a>
-                            </div>
-                            
-                            <div class="treatment-plan-wrapper">
-                                <?php
-                                $res_timeline = $db->prepare("SELECT a.*, u.name as doctor_name FROM appointments a JOIN users u ON a.doctor_id = u.id WHERE a.patient_id = :patient_id AND a.status = 'Scheduled' ORDER BY a.appointment_date ASC, a.time_slot ASC LIMIT 3");
-                                $res_timeline->bindValue(':patient_id', $patient_id, SQLITE3_INTEGER);
-                                $timeline_res = $res_timeline->execute();
-                                $timeline_count = 0;
-                                while ($appt = $timeline_res->fetchArray(SQLITE3_ASSOC)):
-                                    $timeline_count++;
-                                    $appt_doc = stripos($appt['doctor_name'], 'Dr.') === 0 ? $appt['doctor_name'] : 'Dr. ' . $appt['doctor_name'];
-                                    $is_soon = ($timeline_count === 1) ? 'soon' : '';
-                                ?>
-                                    <div class="treatment-plan-item <?php echo $is_soon; ?>">
-                                        <div class="treatment-time-marker"></div>
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-2);">
-                                            <span class="badge badge-scheduled" style="font-size: 0.65rem; padding: 2px 8px;"><?php echo htmlspecialchars($appt['appointment_date']); ?></span>
-                                            <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;"><?php echo htmlspecialchars($appt['time_slot']); ?></span>
-                                        </div>
-                                        <strong style="font-size: 0.8125rem; display: block; color: var(--text-main); margin-bottom: var(--space-1);"><?php echo htmlspecialchars($appt['reason']); ?></strong>
-                                        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-3); border-top: 1px solid var(--border-subtle); padding-top: var(--space-2);">
-                                            <div style="display: flex; align-items: center; gap: var(--space-2);">
-                                                <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--primary-100); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.65rem;">
-                                                    <i class="fa-solid fa-user-doctor"></i>
-                                                </div>
-                                                <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;"><?php echo htmlspecialchars($appt_doc); ?></span>
-                                            </div>
-                                            <button class="medication-btn" onclick="document.getElementById('medibot-toggle').click()" title="Contact Doctor" style="width: 24px; height: 24px; font-size: 0.65rem;">
-                                                <i class="fa-solid fa-comment"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                <?php endwhile; ?>
-                                <?php if ($timeline_count === 0): ?>
-                                    <p style="font-size: 0.8125rem; color: var(--text-muted); text-align: center; padding: 2rem 0; background: var(--bg-slate); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">No upcoming appointments scheduled.</p>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- CENTER COLUMN: Interactive Human Body Map -->
-                        <div class="body-chart-panel">
-                            <div style="text-align: center; margin-bottom: var(--space-4);">
-                                <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-muted);">Interactive Chart Map</span>
-                                <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin-top: 2px;">Symptom Target Indicator</h2>
-                            </div>
-                        
-                        <div class="body-map-wrapper">
-                            <!-- stylized human body SVG clinical outline -->
-                            <svg class="body-svg" viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Head -->
-                                <circle cx="50" cy="24" r="10" />
-                                <!-- Neck -->
-                                <path d="M48 34 L48 38 M52 34 L52 38" />
-                                <!-- Torso / Shoulders -->
-                                <path d="M36 38 C42 38, 58 38, 64 38 C68 45, 66 70, 60 96 C52 96, 48 96, 40 96 C34 70, 32 45, 36 38 Z" />
-                                <!-- Left Arm -->
-                                <path d="M35 39 C28 55, 23 75, 23 96 C24 97, 26 97, 27 96 C27 80, 31 60, 37 44" />
-                                <!-- Right Arm -->
-                                <path d="M65 39 C72 55, 77 75, 77 96 C76 97, 74 97, 73 96 C73 80, 69 60, 63 44" />
-                                <!-- Hips -->
-                                <path d="M40 96 L60 96 C58 112, 42 112, 40 96 Z" />
-                                <!-- Left Leg -->
-                                <path d="M42 112 C39 135, 39 160, 42 184 C45 184, 46 184, 46 182 C44 160, 45 135, 49 112" />
-                                <!-- Right Leg -->
-                                <path d="M58 112 C61 135, 61 160, 58 184 C55 184, 54 184, 54 182 C56 160, 55 135, 51 112" />
-                            </svg>
-                            
-                            <!-- hotspot pulsating indicator dots -->
-                            <div class="hotspot hotspot-head <?php echo $active_hotspot === 'head' ? 'active' : ''; ?>" title="Cranial" onclick="showHotspotDetail('head')"></div>
-                            <div class="hotspot hotspot-chest <?php echo $active_hotspot === 'chest' ? 'active' : ''; ?>" title="Chest/Thoracic" onclick="showHotspotDetail('chest')"></div>
-                            <div class="hotspot hotspot-abdomen <?php echo $active_hotspot === 'abdomen' ? 'active' : ''; ?>" title="Stomach/Abdomen" onclick="showHotspotDetail('abdomen')"></div>
-                            <div class="hotspot hotspot-shoulder <?php echo $active_hotspot === 'shoulder' ? 'active' : ''; ?>" title="Shoulder" onclick="showHotspotDetail('shoulder')"></div>
-                            <div class="hotspot hotspot-knee <?php echo $active_hotspot === 'knee' ? 'active' : ''; ?>" title="Knee/Joints" onclick="showHotspotDetail('knee')"></div>
-                        </div>
-
-                        <!-- Zoom Controls -->
-                        <div style="position: absolute; right: var(--space-6); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: var(--space-2); background: var(--bg-slate); border: 1px solid var(--border-color); padding: 4px; border-radius: var(--radius-full);">
-                            <button style="border: none; background: transparent; cursor: pointer; color: var(--text-main); font-size: 0.95rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-plus"></i></button>
-                            <button style="border: none; background: transparent; cursor: pointer; color: var(--text-main); font-size: 0.95rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;"><i class="fa-solid fa-minus"></i></button>
-                        </div>
-                    </div>
-                    
-                    <!-- RIGHT COLUMN: Detailed Selected Diagnosis Card & Medications Grid -->
-                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                        
-                        <!-- Selected Diagnosis Details Widget -->
-                        <div class="card card-body" id="diagnosis_details_card">
-                            <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; display: block;" id="diag_update">Last diagnosis update: Today</span>
-                            <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin-top: 4px; margin-bottom: var(--space-3);" id="diag_title"><?php echo htmlspecialchars($condition_title); ?></h2>
-                            
-                            <div style="border-top: 1px solid var(--border-subtle); padding-top: var(--space-3); margin-bottom: var(--space-4);">
-                                <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; display: block;">Primary Assessment</span>
-                                <p style="font-size: 0.8125rem; color: var(--danger); font-weight: 600; margin-top: 4px; line-height: 1.4;" id="diag_desc">
-                                    <strong style="color: var(--danger);" id="diag_code"><?php echo htmlspecialchars($condition_code); ?></strong> <?php echo htmlspecialchars($condition_desc); ?>
-                                </p>
-                            </div>
-
-                            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-slate); border: 1px solid var(--border-color); padding: 0.65rem var(--space-4); border-radius: var(--radius-md);">
-                                <div style="display: flex; align-items: center; gap: var(--space-2);">
-                                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary-100); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">
-                                        <i class="fa-solid fa-user-doctor"></i>
-                                    </div>
-                                    <div>
-                                        <strong style="font-size: 0.75rem; color: var(--text-main); display: block;">Dr. Brooklyn Simmons</strong>
-                                        <span style="font-size: 0.6rem; color: var(--text-muted); display: block;">Primary Practitioner</span>
-                                    </div>
-                                </div>
-                                <button class="medication-btn" onclick="document.getElementById('medibot-toggle').click()" title="Send Message" style="width: 28px; height: 28px; font-size: 0.7rem;">
-                                    <i class="fa-solid fa-message"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Prescribed Medications Widget -->
-                        <div class="card" style="padding: 1.25rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h3 style="font-size: 0.9375rem; font-weight: 700; color: var(--text-main); margin: 0;">Prescribed medication</h3>
-                                <a href="?tab=records" class="form-link" style="font-size: 0.75rem; font-weight: 600;">Buy meds &rsaquo;</a>
-                            </div>
-                            
-                            <div class="medication-grid" id="meds_grid_container">
-                                <?php foreach ($meds_to_show as $m): ?>
-                                    <div class="medication-card">
-                                        <div class="medication-icon-box">
-                                            <i class="fa-solid <?php echo $m['icon']; ?>"></i>
-                                        </div>
-                                        <strong class="medication-name"><?php echo htmlspecialchars($m['name']); ?></strong>
-                                        <span class="medication-type"><?php echo htmlspecialchars($m['desc']); ?></span>
-                                        <div class="medication-footer">
-                                            <span class="medication-price"><?php echo htmlspecialchars($m['price']); ?></span>
-                                            <button class="medication-btn" title="Add to cart"><i class="fa-solid fa-cart-plus"></i></button>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-
-                        <!-- Quick Links -->
-                        <div class="card" style="padding: 1rem var(--space-4); display: flex; flex-direction: column; gap: var(--space-2);">
-                            <a href="?tab=symptom-checker" class="form-link" style="font-size: 0.8125rem; font-weight: 600; display: flex; align-items: center; justify-content: space-between;">
-                                <span><i class="fa-solid fa-stethoscope" style="margin-right: 0.5rem;"></i> Check new symptoms</span>
-                                <i class="fa-solid fa-angle-right"></i>
-                            </a>
-                            <a href="?tab=records" class="form-link" style="font-size: 0.8125rem; font-weight: 600; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-subtle); padding-top: var(--space-2); margin-top: 2px;">
-                                <span><i class="fa-solid fa-file-medical" style="margin-right: 0.5rem;"></i> Download Medical History PDF</span>
-                                <i class="fa-solid fa-angle-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <script>
-                // Interactive Hotspot Handler
-                function showHotspotDetail(part) {
-                    // Update active class on hotspot dots
                     document.querySelectorAll('.hotspot').forEach(el => el.classList.remove('active'));
                     const targetDot = document.querySelector('.hotspot-' + part);
                     if (targetDot) targetDot.classList.add('active');

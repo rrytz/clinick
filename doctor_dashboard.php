@@ -406,8 +406,8 @@ if (!function_exists('get_trend_html')) {
                                         <span class="letters-status-pill <?php echo $statusClass; ?>"><?php echo strtoupper(htmlspecialchars($status)); ?></span>
                                     </div>
                                 </div>
-                            <?php endwhile;
-                            if (!$has_today_appts): ?>
+                            <?php endwhile; ?>
+                            <?php if (!$has_today_appts): ?>
                                 <div class="letters-appt-row" style="justify-content: center; text-align: center; color: var(--text-muted);">
                                     <span>No appointments scheduled for today.</span>
                                 </div>
@@ -434,8 +434,8 @@ if (!function_exists('get_trend_html')) {
                                         <span class="letters-record-patient"><?php echo htmlspecialchars($pr['patient_name']); ?></span>
                                         <span class="letters-record-time"><?php echo $timeAgo; ?></span>
                                     </div>
-                                <?php endwhile;
-                                if (!$has_rec): ?>
+                                <?php endwhile; ?>
+                                <?php if (!$has_rec): ?>
                                     <div class="letters-record-item" style="color: var(--text-muted);">
                                         <span>No recent prescription records found.</span>
                                     </div>
@@ -480,9 +480,6 @@ if (!function_exists('get_trend_html')) {
                         </a>
                     </div>
                 </div>
-            <?php endif; ?>
-
-            <!-- TAB 2: APPOINTMENTS -->
             <?php elseif ($tab === 'appointments'): ?>
                 <div class="card">
                     <div class="card-header">
