@@ -3433,3 +3433,69 @@ h6 {
 [data-theme="dark"] .wa-action-btn.btn-primary-pill:hover {
     background: var(--primary-hover) !important;
 }
+
+/* ─── Phase 1 UI Polish: Empty States, Skeleton Loaders & Form Focus ─── */
+.letters-empty-state {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-muted);
+}
+
+.letters-empty-state i {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    display: block;
+    opacity: 0.4;
+}
+
+.letters-empty-state h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+}
+
+.letters-empty-state p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Skeleton Loading Animation */
+@keyframes skeleton-glow {
+    0% { opacity: 0.6; }
+    50% { opacity: 0.3; }
+    100% { opacity: 0.6; }
+}
+
+.letters-skeleton {
+    background: #e2e8f0;
+    border-radius: 6px;
+    animation: skeleton-glow 1.5s ease-in-out infinite;
+}
+
+[data-theme="dark"] .letters-skeleton {
+    background: #334155;
+}
+
+/* Enhanced Focus Outline for Accessibility (WCAG AA) */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--primary) !important;
+    outline-offset: 2px !important;
+}
+
+/* Table Hover & Dark Mode Styling */
+.letters-table-row {
+    transition: background 0.15s ease;
+}
+
+.letters-table-row:hover {
+    background: rgba(15, 118, 110, 0.03);
+}
+
+[data-theme="dark"] .letters-table-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
