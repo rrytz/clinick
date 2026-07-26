@@ -673,9 +673,10 @@ while ($p = $pats_res->fetchArray(SQLITE3_ASSOC)) {
         <!-- Main Workspace -->
         <main class="main-content">
             
-            <div class="page-header">
-                <h1>Administrative Console</h1>
-                <p>System Security, Audit Trails, Global Configuration, and Analytics Insights.</p>
+            <!-- Hero Section (Letters Clinic Style) -->
+            <div class="letters-hero-section">
+                <div class="letters-hero-date"><?php echo date('l, F j'); ?></div>
+                <h1 class="letters-hero-title">Administrative Console & Security Hub</h1>
             </div>
 
             <?php if (!empty($success_msg)): ?>
