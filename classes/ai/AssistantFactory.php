@@ -464,13 +464,51 @@ class AssistantFactory
                          "• **Walk-in Registration Desk**: 8:00 AM – 4:00 PM\n" .
                          "• **Sunday Operations**: Closed for routine consultations (Emergency on-call only).\n\n" .
                          "Would you like me to check available doctor schedules for today or tomorrow?";
-            } elseif (str_contains($lower, 'my appointment') || str_contains($lower, 'my appointments') || str_contains($lower, 'my booking') || str_contains($lower, 'view booking')) {
+            } elseif (str_contains($lower, 'my appointment') || str_contains($lower, 'my appointments') || str_contains($lower, 'my booking') || str_contains($lower, 'view booking') || str_contains($lower, 'check my appointments')) {
                 $q = $this->tools->executeToolCall('getQueueStatus', [], $userId, $role, $convId);
-                $executedTools = ['getQueueStatus'];
+                $appRes = $this->tools->executeToolCall('getAppointmentStatus', [], $userId, $role, $convId);
+                $executedTools = ['getQueueStatus', 'getAppointmentStatus'];
+
+                $todayDate = date('Y-m-d');
+                $upcomingList = [];
+                foreach ($appRes['appointments'] ?? [] as $ap) {
+                    if (in_array($ap['status'], ['Scheduled', 'Approved', 'In Progress'], true) && $ap['appointment_date'] >= $todayDate) {
+                        $upcomingList[] = $ap;
+                    }
+                }
+
                 if (!empty($q['has_queue_today'])) {
-                    $reply = "📅 **Your Active Booking for Today**\n\n• **Queue Ticket**: #" . $q['queue_number'] . "\n• **Physician**: " . $q['doctor_name'] . "\n• **Patients Ahead**: " . $q['patients_ahead'] . "\n• **Est. Wait Time**: " . $q['est_wait_minutes'] . " minute(s)\n\nTrack your live queue position on your patient dashboard!";
+                    $reply = "📅 **Active Consultation Today (Q-#{$q['queue_number']})**\n\n" .
+                             "• **Physician**: " . $q['doctor_name'] . "\n" .
+                             "• **Time Slot**: " . $q['time_slot'] . "\n" .
+                             "• **Patients Ahead**: " . $q['patients_ahead'] . "\n" .
+                             "• **Est. Wait Time**: " . $q['est_wait_minutes'] . " minute(s)\n\n";
+
+                    if (!empty($upcomingList)) {
+                        $lines = [];
+                        foreach ($upcomingList as $up) {
+                            if ($up['appointment_date'] !== $todayDate) {
+                                $formattedDate = date('M j, Y', strtotime($up['appointment_date']));
+                                $lines[] = "• **{$formattedDate}** at **{$up['time_slot']}** — **{$up['doctor_name']}** (Q-{$up['queue_number']})";
+                            }
+                        }
+                        if (!empty($lines)) {
+                            $reply .= "🗓️ **Future Scheduled Visits**:\n" . implode("\n", $lines) . "\n\n";
+                        }
+                    }
+                    $reply .= "Track your live position on your patient dashboard!";
+                } elseif (!empty($upcomingList)) {
+                    $lines = [];
+                    foreach ($upcomingList as $up) {
+                        $formattedDate = date('M j, Y', strtotime($up['appointment_date']));
+                        $docName = stripos($up['doctor_name'], 'Dr.') === 0 ? $up['doctor_name'] : 'Dr. ' . $up['doctor_name'];
+                        $reason = $up['reason'] ?: 'Routine Consultation';
+                        $lines[] = "• **{$formattedDate}** at **{$up['time_slot']}** — **{$docName}** (Q-{$up['queue_number']})\n  *Reason*: {$reason} | *Status*: **" . strtoupper($up['status']) . "**";
+                    }
+                    $listStr = implode("\n\n", $lines);
+                    $reply = "📅 **My Upcoming Appointments**\n\nYou have **" . count($upcomingList) . "** upcoming appointment booking(s):\n\n{$listStr}\n\nWould you like help rescheduling or booking an additional consultation?";
                 } else {
-                    $reply = "📅 **My Appointments**\n\nYou currently have no active queue ticket for today.\n\nWould you like me to show you available doctors to book an appointment?";
+                    $reply = "📅 **My Appointments**\n\nYou currently have no active queue ticket for today and no upcoming appointments scheduled.\n\nWould you like me to show you available doctors to book an appointment?";
                 }
             } elseif (str_contains($lower, 'book') || str_contains($lower, 'booking')) {
                 $docs = $this->tools->executeToolCall('getAvailableDoctors', [], $userId, $role, $convId);
