@@ -162,17 +162,35 @@ class StaffTools
             return ['error' => 'Bulk patient enumeration is disabled for security and PHI protection. Please search by specific patient name or email.'];
         }
 
-        // 3. Escape wildcard characters to prevent SQL pattern exploitation
-        $safeQuery = str_replace(['%', '_'], ['\%', '\_'], $query);
+        // 3. Tokenize multi-word queries for flexible word-order matching (e.g. "christian rivera" -> "rivera christian")
+        $words = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
+        if (empty($words)) {
+            return ['error' => 'Patient search query cannot be empty.'];
+        }
+
+        $whereClauses = [];
+        $params = [];
+        foreach ($words as $idx => $word) {
+            $safeWord = str_replace(['%', '_'], ['\%', '\_'], $word);
+            $paramName = ":q{$idx}";
+            $whereClauses[] = "(name LIKE {$paramName} ESCAPE '\\' OR email LIKE {$paramName} ESCAPE '\\')";
+            $params[$paramName] = '%' . $safeWord . '%';
+        }
+
+        $whereSql = implode(' AND ', $whereClauses);
 
         $stmt = $this->db->prepare("
             SELECT id, name, email, created_at
             FROM users
-            WHERE role = 'Patient' AND (name LIKE :q ESCAPE '\' OR email LIKE :q ESCAPE '\')
+            WHERE role = 'Patient' AND {$whereSql}
             ORDER BY name ASC
             LIMIT 10
         ");
-        $stmt->bindValue(':q', '%' . $safeQuery . '%', SQLITE3_TEXT);
+
+        foreach ($params as $pName => $pVal) {
+            $stmt->bindValue($pName, $pVal, SQLITE3_TEXT);
+        }
+
         $res = $stmt->execute();
 
         $patients = [];

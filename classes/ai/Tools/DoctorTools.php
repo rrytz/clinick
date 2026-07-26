@@ -201,17 +201,36 @@ class DoctorTools
     public function searchAssignedPatientRecords(array $args, int $userId): array
     {
         $query = trim($args['query'] ?? '');
+        $words = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
+        if (empty($words)) {
+            return ['error' => 'Patient search query cannot be empty.'];
+        }
+
+        $whereClauses = [];
+        $params = [':did' => $userId];
+        foreach ($words as $idx => $word) {
+            $safeWord = str_replace(['%', '_'], ['\%', '\_'], $word);
+            $paramName = ":q{$idx}";
+            $whereClauses[] = "(u.name LIKE {$paramName} ESCAPE '\\' OR u.email LIKE {$paramName} ESCAPE '\\')";
+            $params[$paramName] = '%' . $safeWord . '%';
+        }
+
+        $whereSql = implode(' AND ', $whereClauses);
+
         $stmt = $this->db->prepare("
             SELECT DISTINCT u.id, u.name, u.email, u.created_at
             FROM users u
             JOIN appointments a ON u.id = a.patient_id
             WHERE a.doctor_id = :did AND u.role = 'Patient'
-              AND (u.name LIKE :q OR u.email LIKE :q)
+              AND {$whereSql}
             ORDER BY u.name ASC
             LIMIT 10
         ");
-        $stmt->bindValue(':did', $userId, SQLITE3_INTEGER);
-        $stmt->bindValue(':q', "%{$query}%", SQLITE3_TEXT);
+
+        foreach ($params as $pName => $pVal) {
+            $stmt->bindValue($pName, $pVal, is_int($pVal) ? SQLITE3_INTEGER : SQLITE3_TEXT);
+        }
+
         $res = $stmt->execute();
 
         $matches = [];
