@@ -933,7 +933,7 @@ if (!function_exists('get_trend_html')) {
                             </div>
 
                             <!-- WEEK VIEW (id="wa-week", hidden by default) -->
-                            <div id="wa-week" class="hidden flex flex-col gap-4">
+                            <div id="wa-week" class="hidden" style="display: none;">
                                 <?php
                                 $today_ts = strtotime($today_date);
                                 $start_of_week = strtotime('sunday this week', $today_ts);
@@ -960,32 +960,32 @@ if (!function_exists('get_trend_html')) {
                                          data-date="<?php echo $w_date; ?>"
                                          data-status="<?php echo htmlspecialchars($w_status); ?>"
                                          data-notes="<?php echo htmlspecialchars($w_notes); ?>"
-                                         class="wa-card bg-white dark:bg-slate-900 border <?php echo $w_date === $today_date ? 'border-teal-500 ring-2 ring-teal-500/25' : 'border-slate-200 dark:border-slate-800'; ?> hover:bg-slate-50 dark:hover:bg-slate-800/50 p-4 rounded-xl flex items-center justify-between cursor-pointer transition shadow-sm">
+                                         class="wa-card p-4 rounded-xl cursor-pointer" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
                                         
-                                        <div class="flex items-center gap-4">
-                                            <div class="text-center w-12 py-1.5 bg-slate-50 dark:bg-slate-800 rounded-lg flex flex-col justify-center">
-                                                <span class="text-xxs uppercase text-slate-400 font-semibold tracking-wider"><?php echo substr($w_day_name, 0, 3); ?></span>
-                                                <span class="text-lg font-bold text-slate-800 dark:text-slate-100"><?php echo $w_day_num; ?></span>
+                                        <div style="display: flex; align-items: center; gap: 1rem;">
+                                            <div style="text-align: center; width: 48px; padding: 6px; border-radius: 8px; background: rgba(241, 245, 249, 0.6); display: flex; flex-direction: column; justify-content: center;">
+                                                <span style="font-size: 0.65rem; text-transform: uppercase; font-weight: 700;" class="wa-text-muted"><?php echo substr($w_day_name, 0, 3); ?></span>
+                                                <span style="font-size: 1.1rem; font-weight: 800;" class="wa-text-main"><?php echo $w_day_num; ?></span>
                                             </div>
                                             <div>
-                                                <span class="text-sm font-semibold text-slate-900 dark:text-white block"><?php echo "$w_month_lbl $w_day_num, " . date('Y', strtotime($w_date)); ?></span>
-                                                <span class="text-xs text-slate-400"><?php echo htmlspecialchars($w_notes ?: 'No specific hours set'); ?></span>
+                                                <span style="font-size: 0.9rem; font-weight: 700; display: block;" class="wa-text-main"><?php echo "$w_month_lbl $w_day_num, " . date('Y', strtotime($w_date)); ?></span>
+                                                <span style="font-size: 0.75rem;" class="wa-text-muted"><?php echo htmlspecialchars($w_notes ?: 'No specific hours set'); ?></span>
                                             </div>
                                         </div>
                                         
-                                        <div class="flex items-center gap-3">
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
                                             <?php if ($w_appts > 0): ?>
-                                                <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-650 dark:text-indigo-400">
+                                                <span class="wa-pill-avail" style="padding: 4px 10px; font-size: 0.75rem; font-weight: 700; border-radius: 9999px;">
                                                     <?php echo $w_appts; ?> Booked Visits
                                                 </span>
                                             <?php endif; ?>
                                             
                                             <?php if ($w_status): ?>
-                                                <span class="px-3 py-1 text-xs font-semibold rounded-md border <?php echo $w_status === 'Available' ? 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-900/20 dark:text-teal-400 dark:border-teal-800/50' : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800/50'; ?>">
+                                                <span style="padding: 4px 10px; font-size: 0.75rem; font-weight: 700; border-radius: 6px;" class="<?php echo $w_status === 'Available' ? 'wa-pill-avail' : 'wa-pill-unavail'; ?>">
                                                     <?php echo $w_status; ?>
                                                 </span>
                                             <?php else: ?>
-                                                <span class="px-3 py-1 text-xs font-medium text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-md">
+                                                <span class="wa-text-muted" style="padding: 4px 10px; font-size: 0.75rem; border: 1px dashed var(--border-color); border-radius: 6px;">
                                                     Not Set
                                                 </span>
                                             <?php endif; ?>
@@ -995,7 +995,7 @@ if (!function_exists('get_trend_html')) {
                             </div>
 
                             <!-- LIST VIEW (id="wa-list", hidden by default) -->
-                            <div id="wa-list" class="hidden wa-card bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
+                            <div id="wa-list" class="hidden wa-card p-4" style="display: none;">
                                 <div class="table-responsive">
                                     <table class="data-table w-full text-sm text-left">
                                         <thead>
@@ -1204,15 +1204,17 @@ if (!function_exists('get_trend_html')) {
                         if (el) {
                             if (view === v) {
                                 el.classList.remove('hidden');
+                                el.style.display = 'block';
                             } else {
                                 el.classList.add('hidden');
+                                el.style.display = 'none';
                             }
                         }
                         if (btn) {
                             if (view === v) {
-                                btn.className = 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400';
+                                btn.className = 'wa-btn-item active';
                             } else {
-                                btn.className = 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-slate-750 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800';
+                                btn.className = 'wa-btn-item';
                             }
                         }
                     });

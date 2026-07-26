@@ -3099,6 +3099,10 @@ h6 {
 }
 
 /* ─── Work Availability Component Styling & Theme System ─────────── */
+.hidden {
+    display: none !important;
+}
+
 #wa-app {
     padding-top: 0.5rem;
     padding-bottom: 2rem;
