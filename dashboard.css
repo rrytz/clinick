@@ -4384,3 +4384,208 @@ textarea:focus-visible {
     border-color: rgba(239, 68, 68, 0.2);
     color: #f87171;
 }
+
+/* ─── EMR Availability Calendar & Sidebar Overrides ────────── */
+.wa-card {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+}
+
+[data-theme="dark"] .wa-card {
+    border-color: #334155 !important;
+    background: #1e293b !important;
+}
+
+.wa-btn-group {
+    display: inline-flex !important;
+    gap: 4px !important;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 2px !important;
+}
+
+.wa-btn-item {
+    border: 1px solid #334155 !important;
+    border-radius: 2px !important;
+    padding: 5px 12px !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    background: transparent !important;
+    color: #334155 !important;
+    transition: background 0.12s, color 0.12s !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+.wa-btn-item:hover {
+    background: #0f172a !important;
+    color: #ffffff !important;
+}
+
+.wa-btn-item.active {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    border-color: #0f172a !important;
+}
+
+[data-theme="dark"] .wa-btn-item {
+    border-color: #94a3b8 !important;
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .wa-btn-item:hover,
+[data-theme="dark"] .wa-btn-item.active {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border-color: #f8fafc !important;
+}
+
+/* Pill Badge Flattening */
+.wa-pill-avail {
+    background: transparent !important;
+    border: 1px solid #0f766e !important;
+    color: #0f766e !important;
+    border-radius: 2px !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+}
+
+.wa-pill-unavail {
+    background: transparent !important;
+    border: 1px solid #ef4444 !important;
+    color: #ef4444 !important;
+    border-radius: 2px !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+}
+
+[data-theme="dark"] .wa-pill-avail {
+    border-color: #2dd4bf !important;
+    color: #2dd4bf !important;
+}
+
+[data-theme="dark"] .wa-pill-unavail {
+    border-color: #f87171 !important;
+    color: #f87171 !important;
+}
+
+/* Calendar Cells */
+.wa-cell {
+    border-radius: 2px !important;
+    border: 1px solid #e2e8f0 !important;
+    transition: border-color 0.12s, background 0.12s !important;
+}
+
+[data-theme="dark"] .wa-cell {
+    border-color: #334155 !important;
+}
+
+.wa-cell:hover {
+    border-color: #0f172a !important;
+    background: #f8fafc !important;
+}
+
+[data-theme="dark"] .wa-cell:hover {
+    border-color: #f8fafc !important;
+    background: #1e293b !important;
+}
+
+/* Sidebar Quick Action Buttons */
+.wa-action-btn {
+    border: 1px solid #334155 !important;
+    border-radius: 2px !important;
+    padding: 10px 14px !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    background: transparent !important;
+    color: #334155 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    transition: background 0.12s, color 0.12s !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+.wa-action-btn:hover {
+    background: #0f172a !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .wa-action-btn {
+    border-color: #94a3b8 !important;
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .wa-action-btn:hover {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+}
+
+.btn-primary-pill {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    border: 1px solid #0f172a !important;
+    border-radius: 2px !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    text-align: center !important;
+    padding: 12px 14px !important;
+    display: block !important;
+    text-decoration: none !important;
+}
+
+.btn-primary-pill:hover {
+    background: #334155 !important;
+    border-color: #334155 !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+[data-theme="dark"] .btn-primary-pill {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border-color: #f8fafc !important;
+}
+
+[data-theme="dark"] .btn-primary-pill:hover {
+    background: #e2e8f0 !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
+/* Chatbot Floating Launcher Restyling */
+#medibot-toggle-btn,
+.chatbot-launcher,
+.ai-widget-launcher {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    border-radius: 4px !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15) !important;
+    transition: background 0.12s, transform 0.12s !important;
+}
+
+#medibot-toggle-btn:hover,
+.chatbot-launcher:hover,
+.ai-widget-launcher:hover {
+    background: #334155 !important;
+    transform: translateY(-2px) !important;
+}
+
+[data-theme="dark"] #medibot-toggle-btn,
+[data-theme="dark"] .chatbot-launcher,
+[data-theme="dark"] .ai-widget-launcher {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border-color: #e2e8f0 !important;
+}
